@@ -149,6 +149,7 @@ async fn main() -> Result<()> {
     let mut last_report_sent = 0_u64;
     let mut last_report_errors = 0_u64;
     let mut last_report = Instant::now();
+    let run_id = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
 
     for sequence in 0..total {
         let scheduled = started + Duration::from_secs_f64(sequence as f64 / config.rate as f64);
@@ -162,7 +163,7 @@ async fn main() -> Result<()> {
         {
             events[rng.random_range(0..events.len())].clone()
         } else {
-            let native_id = format!("synthetic-{sequence}");
+            let native_id = format!("synthetic-{run_id}-{sequence}");
             let timestamp = now_ms()?;
             let event = Event {
                 id: event_id("loadgen", &native_id),
