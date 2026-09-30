@@ -1,0 +1,122 @@
+{
+  ".codex/hooks.json": {
+    "mtime": 1790807401.777416,
+    "seen": 1790808803.2091978,
+    "ast_hash": "5ebef3dd159986e465ab65e4014107ec",
+    "semantic_hash": ""
+  },
+  "Cargo.toml": {
+    "mtime": 1790807070.878993,
+    "seen": 1790808803.2092037,
+    "ast_hash": "dcbc5c1ad69bf5555946864dd9125da6",
+    "semantic_hash": ""
+  },
+  "crates/taq-core/Cargo.toml": {
+    "mtime": 1790807070.8923225,
+    "seen": 1790808803.2092063,
+    "ast_hash": "3e8963889ca789171b298615be54b04d",
+    "semantic_hash": ""
+  },
+  "crates/taq-core/src/lib.rs": {
+    "mtime": 1790806332.8376274,
+    "seen": 1790808803.2092078,
+    "ast_hash": "fbfe69c558ebe4d7ae7149357da92bee",
+    "semantic_hash": ""
+  },
+  "crates/taq-loadgen/Cargo.toml": {
+    "mtime": 1790807070.8938615,
+    "seen": 1790808803.2092094,
+    "ast_hash": "55da11f66c6648aff16a9b474f03ddac",
+    "semantic_hash": ""
+  },
+  "crates/taq-loadgen/src/main.rs": {
+    "mtime": 1790808918.667781,
+    "seen": 1790808984.924569,
+    "ast_hash": "d22f92c27d3430d92f0f2ece4f5f9043",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/SKILL.md": {
+    "mtime": 1790807401.7718184,
+    "seen": 1790808803.209212,
+    "ast_hash": "0f57b61141afe7b743273aec47c49dcc",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/add-watch.md": {
+    "mtime": 1790807381.0429037,
+    "seen": 1790808803.2092133,
+    "ast_hash": "c1f65eb4102ad515149303c7f296b718",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/exports.md": {
+    "mtime": 1790807381.0478797,
+    "seen": 1790808803.2092144,
+    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/extraction-spec.md": {
+    "mtime": 1790807381.0663984,
+    "seen": 1790808803.2092156,
+    "ast_hash": "bf895ec4d4e40f5f66f7d31c2a9bd4a7",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/github-and-merge.md": {
+    "mtime": 1790807381.0695348,
+    "seen": 1790808803.209217,
+    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/hooks.md": {
+    "mtime": 1790807381.0695348,
+    "seen": 1790808803.2092185,
+    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/query.md": {
+    "mtime": 1790807381.0710933,
+    "seen": 1790808803.20922,
+    "ast_hash": "3c46f8ad006874260614ed8657d02307",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/transcribe.md": {
+    "mtime": 1790807381.0737014,
+    "seen": 1790808803.2092211,
+    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/update.md": {
+    "mtime": 1790807381.0757535,
+    "seen": 1790808803.209222,
+    "ast_hash": "9378bd03d56baaf78bd738ab3848f142",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1790805429.192808,
+    "seen": 1790808803.2092235,
+    "ast_hash": "76be0c0fdc8f08115ae68fe1dcdb4773",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1790807401.7758946,
+    "seen": 1790808803.2092247,
+    "ast_hash": "21ceb6533048be51308e69e7b74a35cf",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1790809949.971246,
+    "seen": 1790809990.687778,
+    "ast_hash": "903215abb64d515d27bc8ce544628efa",
+    "semantic_hash": ""
+  },
+  "deploy/docker-compose.yml": {
+    "mtime": 1790809351.5109153,
+    "seen": 1790809846.4572978,
+    "ast_hash": "5b912fdb45cb0014b5fe8d0802f7ca78",
+    "semantic_hash": ""
+  },
+  "docs/adr/0001-arquitectura-y-stack.md": {
+    "mtime": 1790809620.8657231,
+    "seen": 1790809846.4573002,
+    "ast_hash": "58eb08266b88c96b08d91a183631aa63",
+    "semantic_hash": ""
+  }
+}

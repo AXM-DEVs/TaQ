@@ -26,6 +26,7 @@ just lint
 Para enviar duplicados en la comprobación manual:
 
 ```powershell
+$env:RUST_LOG = 'info'
 cargo run --release -p taq-loadgen -- --rate 5000 --duration 30 --entities 100 --duplicate-ratio 0.01
 just verify
 ```
@@ -33,6 +34,8 @@ just verify
 El generador informa el total confirmado, los ids únicos confirmados, errores y tasa real. `just verify` muestra el total almacenado, `uniqExact(id)` y p99 de la latencia entre `ingested_at_ms` y la inserción en ClickHouse. Compara `unique_ids` con `uniqExact(id)`; ClickHouse consume el topic en segundo plano y puede tardar unos instantes en alcanzar al productor.
 
 `just down` detiene los servicios y conserva los volúmenes. Para descartar también los datos, ejecuta `docker compose --env-file .env -f deploy/docker-compose.yml down -v`.
+
+Graphify queda integrado en Codex para navegar el código y sus relaciones. Usa `$graphify` para generar o actualizar el grafo del proyecto.
 
 ## Estructura
 
