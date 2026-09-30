@@ -15,6 +15,8 @@ Se crea un workspace modular de Cargo con contratos compartidos en `taq-core` y 
 
 ClickHouse consume ese topic mediante Kafka Engine y una vista materializada que persiste los eventos en MergeTree, particionado por el día de `ingested_at_ms`. Redis y PostgreSQL con pgvector se mantienen en Compose con healthchecks. Los cuatro servicios usan volúmenes nombrados. Docker Compose ejecuta también la creación del topic al iniciar.
 
+El motor Kafka de ClickHouse usa seis consumidores, uno por partición, con un timeout de polling de 100 ms, flush máximo de 500 ms y un hilo por consumidor. El valor global predeterminado de flush de 7.500 ms superó el umbral de latencia durante la prueba local.
+
 `Event.id` se calcula como blake3 de `source + "|" + id nativo`. El generador conserva ids nativos para poder reenviar duplicados controlados. Los servicios de modelo, API y dashboard quedan fuera de esta fase.
 
 ## Imágenes verificadas

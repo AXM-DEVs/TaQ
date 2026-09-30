@@ -16,7 +16,10 @@ SETTINGS
     kafka_topic_list = 'events.raw',
     kafka_group_name = 'taq-clickhouse-events-raw',
     kafka_format = 'JSONEachRow',
-    kafka_num_consumers = 1,
+    kafka_num_consumers = 6,
+    kafka_poll_timeout_ms = 100,
+    kafka_flush_interval_ms = 500,
+    kafka_thread_per_consumer = 1,
     input_format_json_read_objects_as_strings = 1;
 
 CREATE TABLE IF NOT EXISTS taq.events
