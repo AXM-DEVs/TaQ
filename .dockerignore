@@ -1,0 +1,13 @@
+.git
+.codex
+.superpowers
+graphify-out
+sbom
+target
+docs
+scripts
+*.md
+.env
+.env.*
+!.env.example
+desktop.ini

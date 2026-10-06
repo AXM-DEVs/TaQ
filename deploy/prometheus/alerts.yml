@@ -1,0 +1,13 @@
+groups:
+  - name: taq-infrastructure
+    interval: 30s
+    rules:
+      - alert: TaQDependencyScrapeUnavailable
+        expr: up{job=~"redpanda|clickhouse|otel-collector"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: taq
+        annotations:
+          summary: "No se pueden recolectar métricas de una dependencia TaQ"
+          description: "El target {{ $labels.job }} no está disponible para Prometheus desde hace al menos 5 minutos. Revisar salud, conectividad y logs del servicio."

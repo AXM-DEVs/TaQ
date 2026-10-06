@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/taq-core", "crates/taq-loadgen"]
+members = ["crates/taq-core", "crates/taq-loadgen", "crates/taq-ingest", "crates/taq-connector-wikimedia", "crates/taq-ingestd", "crates/taq-connector-bluesky", "crates/taq-connector-rss", "crates/taq-dlq-replay", "crates/taq-observability", "crates/taq-state", "crates/taq-api"]
 resolver = "2"
 
 [workspace.package]
@@ -9,11 +9,26 @@ license = "UNLICENSED"
 
 [workspace.dependencies]
 anyhow = "1.0"
+axum = "0.8.9"
 blake3 = "1.8"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+idna = "1.1"
 rdkafka = { version = "0.39.0", features = ["cmake-build"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.47", features = ["macros", "rt-multi-thread", "time"] }
+thiserror = "2.0"
+tokio = { version = "1.47", features = ["macros", "rt-multi-thread", "sync", "time", "signal", "net"] }
+tokio-postgres = { version = "0.7", features = ["with-serde_json-1"] }
+deadpool-postgres = "0.14"
+url = "2.5"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+opentelemetry = { version = "0.33.0", features = ["metrics"] }
+opentelemetry_sdk = { version = "0.33.0", features = ["metrics", "rt-tokio"] }
+opentelemetry-otlp = { version = "0.33.0", default-features = false, features = ["metrics", "grpc-tonic"] }
 rand = "0.9"
+reqwest = { version = "0.12", features = ["stream", "json", "rustls-tls"], default-features = false }
+eventsource-stream = "0.2"
+tokio-tungstenite = { version = "0.23", features = ["rustls-tls-webpki-roots", "url"] }
+rss = "2.0"

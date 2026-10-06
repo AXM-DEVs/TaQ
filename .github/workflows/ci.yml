@@ -3,8 +3,54 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "17 5 * * 1"
 
 jobs:
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Escaneo de secretos con Gitleaks
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: "false"
+      - name: Instalar cargo-audit fijado
+        run: cargo install cargo-audit --version 0.22.2 --locked
+      - name: Auditar dependencias Rust
+        run: cargo audit
+      - name: Instalar generador CycloneDX fijado
+        run: cargo install cargo-cyclonedx --version 0.5.9 --locked
+      - name: Generar SBOM CycloneDX del workspace
+        run: |
+          set -euo pipefail
+          cargo cyclonedx --all --format json --spec-version 1.5
+          mkdir -p sbom
+          mapfile -d '' manifests < <(find . -type f -name '*.cdx.json' -not -path './sbom/*' -print0 | sort -z)
+          if [[ ${#manifests[@]} -eq 0 ]]; then
+            echo 'cargo-cyclonedx no generó archivos *.cdx.json' >&2
+            exit 1
+          fi
+          for manifest in "${manifests[@]}"; do
+            destination="sbom/${manifest#./}"
+            mkdir -p "$(dirname "$destination")"
+            cp "$manifest" "$destination"
+          done
+          (cd sbom && find . -type f -name '*.cdx.json' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+      - name: Publicar artefacto SBOM
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: taq-cyclonedx-sbom
+          path: sbom/
+          if-no-files-found: error
+          retention-days: 30
+
   rust:
     runs-on: ubuntu-latest
     steps:
@@ -22,3 +68,47 @@ jobs:
         run: cargo test --workspace
       - name: Validar Docker Compose
         run: docker compose --env-file .env.example -f deploy/docker-compose.yml config --quiet
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.98.1
+      - uses: Swatinem/rust-cache@v2
+      - name: Levantar stack de desarrollo
+        run: |
+          docker compose --env-file .env.example -f deploy/docker-compose.yml up -d
+          bash scripts/e2e/wait-compose.sh
+      - name: Migración real MergeTree a ReplacingMergeTree
+        run: bash scripts/e2e/clickhouse-migration.sh
+      - name: Publicar eventos y validar ClickHouse
+        shell: bash
+        run: |
+          set -euo pipefail
+          output=$(cargo run --release -p taq-loadgen -- --rate 100 --duration 5 --entities 20 --duplicate-ratio 0.01)
+          printf '%s\n' "$output"
+          expected_unique=$(printf '%s\n' "$output" | sed -n 's/.*unique_enviados=\([0-9]*\).*/\1/p')
+          test -n "$expected_unique"
+
+          for attempt in $(seq 1 60); do
+            metrics=$(docker compose --env-file .env.example -f deploy/docker-compose.yml exec -T clickhouse clickhouse-client \
+              --user=default --password=taq_dev --format=TSV \
+              --query "SELECT count(), uniqExact(id), quantileExact(0.99)(toUnixTimestamp64Milli(inserted_at) - toUnixTimestamp64Milli(broker_appended_at)) FROM taq.events FINAL WHERE source = 'loadgen'")
+            IFS=$'\t' read -r count unique_ids p99_ms <<< "$metrics"
+            if [[ "$count" == "500" ]]; then
+              break
+            fi
+            sleep 1
+          done
+
+          echo "count=$count unique_ids=$unique_ids expected_unique=$expected_unique p99_ms=$p99_ms"
+          test "$count" = "$expected_unique"
+          test "$unique_ids" = "$expected_unique"
+          test "$p99_ms" -lt 2000
+      - name: Replay repetido y errores de parseo en ClickHouse
+        run: bash scripts/e2e/f2-recovery.sh
+      - name: Detener stack y descartar volúmenes efímeros
+        if: always()
+        run: docker compose --env-file .env.example -f deploy/docker-compose.yml down -v

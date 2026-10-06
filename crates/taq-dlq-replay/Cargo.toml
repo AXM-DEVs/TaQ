@@ -1,0 +1,17 @@
+[package]
+name = "taq-dlq-replay"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+futures-util.workspace = true
+rdkafka.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+taq-core = { path = "../taq-core" }
+taq-ingest = { path = "../taq-ingest" }
+taq-observability = { path = "../taq-observability" }

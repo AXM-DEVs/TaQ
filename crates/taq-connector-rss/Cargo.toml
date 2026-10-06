@@ -1,0 +1,19 @@
+[package]
+name = "taq-connector-rss"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+blake3.workspace = true
+chrono.workspace = true
+reqwest.workspace = true
+rss.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+taq-ingest = { path = "../taq-ingest" }
+taq-core = { path = "../taq-core" }

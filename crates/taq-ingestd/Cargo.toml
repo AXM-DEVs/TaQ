@@ -1,0 +1,19 @@
+[package]
+name = "taq-ingestd"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+taq-core = { path = "../taq-core" }
+taq-ingest = { path = "../taq-ingest" }
+taq-connector-wikimedia = { path = "../taq-connector-wikimedia" }
+taq-connector-bluesky = { path = "../taq-connector-bluesky" }
+taq-connector-rss = { path = "../taq-connector-rss" }
+taq-observability = { path = "../taq-observability" }
+taq-state = { path = "../taq-state" }

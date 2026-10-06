@@ -1,20 +1,41 @@
 use std::{
-    collections::HashSet,
+    collections::VecDeque,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use anyhow::{Context, Result, bail};
+use futures_util::{
+    FutureExt,
+    stream::{FuturesUnordered, StreamExt},
+};
 use rand::{Rng, SeedableRng, rngs::StdRng};
 use rdkafka::{
     ClientConfig,
     producer::{FutureProducer, FutureRecord, Producer},
 };
 use serde_json::json;
-use taq_core::Event;
-use tokio::{task::JoinSet, time::sleep};
+use taq_core::{Event, TimestampQuality};
+use tokio::time::sleep;
 use tracing::{error, info};
 
 const MAX_IN_FLIGHT: usize = 1024;
+const MAX_EVENT_CACHE: usize = 4096;
+
+#[derive(Debug, Clone)]
+struct EventSample {
+    native_id: String,
+    payload: Vec<u8>,
+}
+
+fn remember_event(cache: &mut VecDeque<EventSample>, event: EventSample, capacity: usize) {
+    if capacity == 0 {
+        return;
+    }
+    if cache.len() == capacity {
+        cache.pop_front();
+    }
+    cache.push_back(event);
+}
 
 struct Config {
     rate: u64,
@@ -90,35 +111,25 @@ fn event_id(source: &str, native_id: &str) -> String {
 }
 
 fn account_result(
-    result: std::result::Result<(String, std::result::Result<(), String>), tokio::task::JoinError>,
-    unique_ids: &mut HashSet<String>,
+    (event, is_unique, delivery): (EventSample, bool, std::result::Result<(), String>),
+    event_cache: &mut VecDeque<EventSample>,
+    unique_sent: &mut u64,
     sent: &mut u64,
     errors: &mut u64,
-) -> Result<()> {
-    let (id, delivery) = result.context("tarea de envío terminó inesperadamente")?;
+) {
     match delivery {
         Ok(()) => {
             *sent += 1;
-            unique_ids.insert(id);
+            if is_unique {
+                *unique_sent += 1;
+                remember_event(event_cache, event, MAX_EVENT_CACHE);
+            }
         }
         Err(message) => {
             *errors += 1;
             error!(%message, "falló el envío del evento");
         }
     }
-    Ok(())
-}
-
-async fn collect_one(
-    pending: &mut JoinSet<(String, std::result::Result<(), String>)>,
-    unique_ids: &mut HashSet<String>,
-    sent: &mut u64,
-    errors: &mut u64,
-) -> Result<()> {
-    let Some(result) = pending.join_next().await else {
-        return Ok(());
-    };
-    account_result(result, unique_ids, sent, errors)
 }
 
 #[tokio::main]
@@ -140,11 +151,11 @@ async fn main() -> Result<()> {
     let deadline = Instant::now() + Duration::from_secs(config.duration_s);
     let started = Instant::now();
     let total = config.rate.saturating_mul(config.duration_s);
-    let mut events: Vec<(String, Vec<u8>)> = Vec::new();
-    let mut unique_ids = HashSet::new();
-    let mut pending = JoinSet::new();
+    let mut event_cache: VecDeque<EventSample> = VecDeque::with_capacity(MAX_EVENT_CACHE);
+    let mut pending = FuturesUnordered::new();
     let mut rng = StdRng::seed_from_u64(42);
     let mut sent = 0_u64;
+    let mut unique_sent = 0_u64;
     let mut errors = 0_u64;
     let mut last_report_sent = 0_u64;
     let mut last_report_errors = 0_u64;
@@ -158,43 +169,62 @@ async fn main() -> Result<()> {
             sleep(scheduled - now).await;
         }
 
-        let (native_id, payload) = if !events.is_empty()
+        let (event, is_unique) = if !event_cache.is_empty()
             && rng.random::<f64>() < config.duplicate_ratio
         {
-            events[rng.random_range(0..events.len())].clone()
+            (
+                event_cache[rng.random_range(0..event_cache.len())].clone(),
+                false,
+            )
         } else {
             let native_id = format!("synthetic-{run_id}-{sequence}");
             let timestamp = now_ms()?;
             let event = Event {
+                schema_version: 2,
                 id: event_id("loadgen", &native_id),
                 source: "loadgen".into(),
                 kind: "mention".into(),
                 entity_ids: vec![format!("entity-{}", sequence % config.entities)],
                 occurred_at_ms: timestamp,
+                occurred_at_quality: TimestampQuality::Source,
                 ingested_at_ms: timestamp,
                 payload: json!({"native_id": native_id, "sequence": sequence, "synthetic": true}),
             };
             let payload = serde_json::to_vec(&event)?;
-            events.push((native_id.clone(), payload.clone()));
-            (native_id, payload)
+            (EventSample { native_id, payload }, true)
         };
-        let id = event_id("loadgen", &native_id);
         let producer = producer.clone();
-        pending.spawn(async move {
-            let record = FutureRecord::to("events.raw").key(&id).payload(&payload);
+        pending.push(async move {
+            let id = event_id("loadgen", &event.native_id);
+            let record = FutureRecord::to("events.raw")
+                .key(&id)
+                .payload(&event.payload);
             let result = producer
-                .send(record, Duration::from_secs(0))
+                .send(record, Duration::from_secs(1))
                 .await
                 .map(|_| ())
                 .map_err(|(err, _)| err.to_string());
-            (id, result)
+            (event, is_unique, result)
         });
 
         if pending.len() >= MAX_IN_FLIGHT {
-            collect_one(&mut pending, &mut unique_ids, &mut sent, &mut errors).await?;
+            let result = pending.next().await.context("futuros de envío vacíos")?;
+            account_result(
+                result,
+                &mut event_cache,
+                &mut unique_sent,
+                &mut sent,
+                &mut errors,
+            );
         }
-        while let Some(result) = pending.try_join_next() {
-            account_result(result, &mut unique_ids, &mut sent, &mut errors)?;
+        while let Some(result) = pending.next().now_or_never().flatten() {
+            account_result(
+                result,
+                &mut event_cache,
+                &mut unique_sent,
+                &mut sent,
+                &mut errors,
+            );
         }
         if last_report.elapsed() >= Duration::from_secs(1) {
             let elapsed = last_report.elapsed().as_secs_f64().max(0.001);
@@ -209,8 +239,14 @@ async fn main() -> Result<()> {
         }
     }
 
-    while !pending.is_empty() {
-        collect_one(&mut pending, &mut unique_ids, &mut sent, &mut errors).await?;
+    while let Some(result) = pending.next().await {
+        account_result(
+            result,
+            &mut event_cache,
+            &mut unique_sent,
+            &mut sent,
+            &mut errors,
+        );
     }
     producer
         .flush(Duration::from_secs(10))
@@ -220,12 +256,56 @@ async fn main() -> Result<()> {
     }
     let elapsed = started.elapsed().as_secs_f64();
     println!(
-        "total_enviados={sent} únicos_enviados={} errores={errors} tasa_real={:.0} ev/s",
-        unique_ids.len(),
+        "total_enviados={sent} unique_enviados={unique_sent} errores={errors} tasa_real={:.0} ev/s",
         sent as f64 / elapsed
     );
     if errors > 0 {
         bail!("el generador terminó con {errors} errores de envío");
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{EventSample, remember_event};
+    use std::collections::VecDeque;
+
+    #[test]
+    fn event_sample_cache_discards_oldest_entry_at_capacity() {
+        let mut cache = VecDeque::new();
+        remember_event(
+            &mut cache,
+            EventSample {
+                native_id: "event-1".into(),
+                payload: vec![1],
+            },
+            2,
+        );
+        remember_event(
+            &mut cache,
+            EventSample {
+                native_id: "event-2".into(),
+                payload: vec![2],
+            },
+            2,
+        );
+        remember_event(
+            &mut cache,
+            EventSample {
+                native_id: "event-3".into(),
+                payload: vec![3],
+            },
+            2,
+        );
+
+        assert_eq!(cache.len(), 2);
+        assert_eq!(
+            cache.front().map(|event| event.native_id.as_str()),
+            Some("event-2")
+        );
+        assert_eq!(
+            cache.back().map(|event| event.native_id.as_str()),
+            Some("event-3")
+        );
+    }
 }

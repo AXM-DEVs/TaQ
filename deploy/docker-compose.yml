@@ -11,8 +11,8 @@ services:
       - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
       - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
     ports:
-      - "19092:19092"
-      - "9644:9644"
+      - "127.0.0.1:19092:19092"
+      - "127.0.0.1:9644:9644"
     volumes:
       - redpanda_data:/var/lib/redpanda/data
     healthcheck:
@@ -40,14 +40,117 @@ services:
       - "1"
       - --topic-config
       - retention.ms=604800000
+      - --topic-config
+      - message.timestamp.type=LogAppendTime
       - --if-not-exists
-    restart: "no"
+    restart: "on-failure:5"
+
+  raw-topic-config-init:
+    image: docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:?copia .env.example a .env}
+    depends_on:
+      topic-init:
+        condition: service_completed_successfully
+    entrypoint: ["rpk"]
+    command:
+      - topic
+      - alter-config
+      - events.raw
+      - --brokers
+      - redpanda:9092
+      - --no-confirm
+      - --set
+      - message.timestamp.type=LogAppendTime
+    restart: "on-failure:5"
+
+  dead-letter-topic-init:
+    image: docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:?copia .env.example a .env}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint: ["rpk"]
+    command:
+      - topic
+      - create
+      - events.dead_letter
+      - --brokers
+      - redpanda:9092
+      - --partitions
+      - "6"
+      - --replicas
+      - "1"
+      - --topic-config
+      - retention.ms=604800000
+      - --if-not-exists
+    restart: "on-failure:5"
+
+  context-dead-letter-topic-init:
+    image: docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:?copia .env.example a .env}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint: ["rpk"]
+    command:
+      - topic
+      - create
+      - events.context_dead_letter
+      - --brokers
+      - redpanda:9092
+      - --partitions
+      - "6"
+      - --replicas
+      - "1"
+      - --topic-config
+      - retention.ms=604800000
+      - --if-not-exists
+    restart: "on-failure:5"
+
+  source-dead-letter-topic-init:
+    image: docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:?copia .env.example a .env}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint: ["rpk"]
+    command:
+      - topic
+      - create
+      - events.source_dead_letter
+      - --brokers
+      - redpanda:9092
+      - --partitions
+      - "6"
+      - --replicas
+      - "1"
+      - --topic-config
+      - retention.ms=604800000
+      - --if-not-exists
+    restart: "on-failure:5"
+
+  approved-actions-topic-init:
+    image: docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:?copia .env.example a .env}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint: ["rpk"]
+    command:
+      - topic
+      - create
+      - actions.approved
+      - --brokers
+      - redpanda:9092
+      - --partitions
+      - "6"
+      - --replicas
+      - "1"
+      - --topic-config
+      - retention.ms=604800000
+      - --if-not-exists
+    restart: "on-failure:5"
 
   redis:
     image: redis:${REDIS_VERSION:?copia .env.example a .env}
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -61,16 +164,23 @@ services:
     depends_on:
       topic-init:
         condition: service_completed_successfully
+      dead-letter-topic-init:
+        condition: service_completed_successfully
+      raw-topic-config-init:
+        condition: service_completed_successfully
     environment:
       CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
       CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-taq_dev}
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     ports:
-      - "8123:8123"
-      - "9000:9000"
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9363:9363"
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+      - ./clickhouse/migrations:/docker-migrations:ro
+      - ./clickhouse/prometheus.xml:/etc/clickhouse-server/config.d/prometheus.xml:ro
     healthcheck:
       test: ["CMD-SHELL", "clickhouse-client --user=$${CLICKHOUSE_USER:-default} --password=$${CLICKHOUSE_PASSWORD:-taq_dev} --query='SELECT 1' >/dev/null"]
       interval: 5s
@@ -85,17 +195,136 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taq_dev}
       POSTGRES_DB: ${POSTGRES_DB:-taq}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/001-taq-state.sql:ro
+      - ./postgres/migrations:/docker-migrations:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 20
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:?copia .env.example a .env}
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    ports:
+      - "127.0.0.1:4317:4317"
+      - "127.0.0.1:4318:4318"
+    volumes:
+      - ./otel/collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+
+  prometheus:
+    image: prom/prometheus:v${PROMETHEUS_VERSION:?copia .env.example a .env}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_VERSION:?copia .env.example a .env}
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-taq_dev}
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_started
+
+  taq-ingestd:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: deploy/taq-ingestd.Dockerfile
+    environment:
+      TAQ_KAFKA_BROKER: redpanda:9092
+      TAQ_DATABASE_URL: postgres://${POSTGRES_USER:-taq}:${POSTGRES_PASSWORD:-taq_dev}@postgres:5432/${POSTGRES_DB:-taq}
+      TAQ_PG_POOL_MAX_SIZE: ${TAQ_PG_POOL_MAX_SIZE:-16}
+      TAQ_PG_POOL_ACQUIRE_TIMEOUT_SECS: ${TAQ_PG_POOL_ACQUIRE_TIMEOUT_SECS:-5}
+      TAQ_OTEL_ENDPOINT: http://otel-collector:4317
+      TAQ_WIKIMEDIA_URL: ${TAQ_WIKIMEDIA_URL:-https://stream.wikimedia.org/v2/stream/recentchange}
+      TAQ_BLUESKY_JETSTREAM_URL: ${TAQ_BLUESKY_JETSTREAM_URL:-wss://jetstream.us-east.bsky.network/subscribe}
+      TAQ_RSS_FEED_URL: ${TAQ_RSS_FEED_URL:-https://feeds.bbci.co.uk/news/rss.xml}
+      TAQ_RSS_POLL_INTERVAL_SECS: ${TAQ_RSS_POLL_INTERVAL_SECS:-60}
+      TAQ_SOURCE_USER_AGENT: ${TAQ_SOURCE_USER_AGENT:-TaQ/0.1}
+      TAQ_SOURCE_CONNECT_TIMEOUT_SECS: ${TAQ_SOURCE_CONNECT_TIMEOUT_SECS:-10}
+      TAQ_SOURCE_REQUEST_TIMEOUT_SECS: ${TAQ_SOURCE_REQUEST_TIMEOUT_SECS:-30}
+      TAQ_SOURCE_QUEUE_CAPACITY: ${TAQ_SOURCE_QUEUE_CAPACITY:-1000}
+      TAQ_RETRY_INITIAL_SECS: ${TAQ_RETRY_INITIAL_SECS:-1}
+      TAQ_RETRY_MAX_SECS: ${TAQ_RETRY_MAX_SECS:-60}
+      TAQ_WIKIMEDIA_EVENTS_PER_SEC: ${TAQ_WIKIMEDIA_EVENTS_PER_SEC:-5}
+      TAQ_BLUESKY_EVENTS_PER_SEC: ${TAQ_BLUESKY_EVENTS_PER_SEC:-5}
+      TAQ_RSS_EVENTS_PER_SEC: ${TAQ_RSS_EVENTS_PER_SEC:-5}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      raw-topic-config-init:
+        condition: service_completed_successfully
+      dead-letter-topic-init:
+        condition: service_completed_successfully
+      source-dead-letter-topic-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    restart: unless-stopped
+
+  taq-api:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: deploy/taq-api.Dockerfile
+    environment:
+      TAQ_KAFKA_BROKER: redpanda:9092
+      TAQ_DATABASE_URL: postgres://${POSTGRES_USER:-taq}:${POSTGRES_PASSWORD:-taq_dev}@postgres:5432/${POSTGRES_DB:-taq}
+      TAQ_PG_POOL_MAX_SIZE: ${TAQ_PG_POOL_MAX_SIZE:-16}
+      TAQ_PG_POOL_ACQUIRE_TIMEOUT_SECS: ${TAQ_PG_POOL_ACQUIRE_TIMEOUT_SECS:-5}
+      TAQ_OTEL_ENDPOINT: http://otel-collector:4317
+      TAQ_API_BIND: 0.0.0.0:8080
+      TAQ_API_PUBLICLY_ROUTABLE: "false"
+      TAQ_API_TLS_TERMINATED_UPSTREAM: ${TAQ_API_TLS_TERMINATED_UPSTREAM:-false}
+      TAQ_ACTION_DISPATCH_ENABLED: ${TAQ_ACTION_DISPATCH_ENABLED:-false}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      raw-topic-config-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      context-dead-letter-topic-init:
+        condition: service_completed_successfully
+      approved-actions-topic-init:
+        condition: service_completed_successfully
+      otel-collector:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
   redpanda_data:
   redis_data:
   clickhouse_data:
   postgres_data:
+  prometheus_data:
+  grafana_data:

@@ -13,7 +13,7 @@ loadgen rate duration:
     $env:RUST_LOG = 'info'; cargo run --release -p taq-loadgen -- --rate {{rate}} --duration {{duration}} --entities 100 --duplicate-ratio 0
 
 verify:
-    {{compose}} exec -T clickhouse clickhouse-client --user="$env:CLICKHOUSE_USER" --password="$env:CLICKHOUSE_PASSWORD" --query "SELECT count() AS count, uniqExact(id) AS unique_ids, quantileExact(0.99)(toUnixTimestamp64Milli(inserted_at) - ingested_at_ms) AS p99_ingest_ms FROM taq.events FORMAT PrettyCompact"
+    {{compose}} exec -T clickhouse clickhouse-client --user="$env:CLICKHOUSE_USER" --password="$env:CLICKHOUSE_PASSWORD" --query "SELECT count() AS count, uniqExact(id) AS unique_ids, quantileExact(0.99)(toUnixTimestamp64Milli(inserted_at) - toUnixTimestamp64Milli(broker_appended_at)) AS p99_ingest_ms FROM taq.events FINAL FORMAT PrettyCompact"
 
 test:
     cargo test --workspace

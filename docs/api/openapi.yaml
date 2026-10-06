@@ -1,0 +1,215 @@
+openapi: 3.1.0
+info:
+  title: TaQ API
+  version: 0.1.0
+  description: Tenant-scoped API for watchlists, findings, reviewed actions, feedback, and rule governance.
+servers:
+  - url: http://127.0.0.1:8080
+security:
+  - bearerAuth: []
+paths:
+  /health/live:
+    get:
+      security: []
+      responses:
+        '200': { description: Process is alive }
+  /health/ready:
+    get:
+      security: []
+      responses:
+        '200': { description: PostgreSQL and Kafka context consumer are ready }
+        '503': { description: A required dependency is unavailable }
+  /v1/watchlist/entities:
+    get:
+      x-required-scope: watchlist:read
+      responses:
+        '200': { description: Current enabled entities for the authenticated tenant }
+    post:
+      x-required-scope: watchlist:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [idempotency_key, entity_type, canonical_name, aliases, reason]
+              properties:
+                idempotency_key: { type: string, maxLength: 256 }
+                entity_type: { type: string, enum: [brand, domain, organization] }
+                canonical_name: { type: string, maxLength: 253 }
+                aliases: { type: array, maxItems: 100, items: { type: string } }
+                negative_aliases: { type: array, maxItems: 100, items: { type: string } }
+                reason: { type: string }
+      responses:
+        '201': { description: Versioned watchlist entity created }
+        '400': { description: Invalid entity }
+  /v1/findings:
+    get:
+      x-required-scope: findings:read
+      parameters:
+        - { in: query, name: limit, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+        - { in: query, name: offset, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { description: Paginated tenant findings with evidence provenance }
+    post:
+      x-required-scope: findings:write
+      description: Idempotent finding ingestion; the referenced rule version must be active for this tenant.
+      responses:
+        '201': { description: Finding stored or existing idempotent finding returned }
+  /v1/findings/{finding_id}/status:
+    post:
+      x-required-scope: findings:review
+      parameters:
+        - { in: path, name: finding_id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Human review status updated and audited }
+  /v1/findings/{finding_id}/feedback:
+    post:
+      x-required-scope: feedback:write
+      parameters:
+        - { in: path, name: finding_id, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [idempotency_key, label, reason]
+              properties:
+                idempotency_key: { type: string, maxLength: 256 }
+                label: { type: string, enum: [correct, false_positive, missed, needs_review] }
+                reason: { type: string, maxLength: 2000 }
+      responses:
+        '201': { description: Attributed immutable feedback stored; no automatic promotion }
+  /v1/findings/{finding_id}/actions:
+    post:
+      x-required-scope: actions:request
+      parameters:
+        - { in: path, name: finding_id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '201': { description: Action created pending human approval; response includes an RFC3339 `expires_at` }
+  /v1/actions/{action_id}/decision:
+    post:
+      x-required-scope: actions:approve
+      parameters:
+        - { in: path, name: action_id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Decision and transactional outbox recorded; approved dispatch records include RFC3339 `expires_at`; no external integration is executed }
+        '409': { description: Action is not pending or has expired }
+        '403': { description: Requester cannot approve their own action }
+  /v1/actions:
+    get:
+      x-required-scope: actions:read
+      parameters:
+        - { in: query, name: state, schema: { type: string, enum: [pending, approved, rejected, expired, queued, completed, failed] } }
+        - { in: query, name: limit, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+        - { in: query, name: offset, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { description: Tenant-scoped action history }
+  /v1/rules:
+    get:
+      x-required-scope: rules:read
+      parameters:
+        - { in: query, name: limit, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+        - { in: query, name: offset, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { description: Paginated tenant rule versions and lifecycle states }
+    post:
+      x-required-scope: rules:write
+      responses:
+        '201': { description: Immutable candidate rule version created }
+  /v1/rules/{rule_id}/evaluations:
+    post:
+      x-required-scope: rules:evaluate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleEvaluationRequest' }
+      responses:
+        '200': { description: TaQ-calculated gold and temporal-holdout metrics, persisted with dataset and guardrail provenance }
+        '412': { description: A versioned guardrail policy must exist }
+        '409': { description: Dataset integrity or rule lifecycle check failed }
+  /v1/rules/{rule_id}/promotion:
+    post:
+      x-required-scope: rules:promote
+      responses:
+        '200': { description: Candidate, shadow, active, rejected, or retired transition recorded }
+        '412': { description: Passing current gold and temporal holdout evidence is required }
+  /v1/rule-datasets:
+    post:
+      x-required-scope: rules:dataset:approve
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleDatasetRegistration' }
+      responses:
+        '201': { description: Normalized, content-addressed dataset and immutable samples registered }
+        '200': { description: Identical dataset version already registered }
+        '409': { description: Dataset version already exists with different content }
+  /v1/guardrails:
+    post:
+      x-required-scope: rules:guardrails:write
+      responses:
+        '200': { description: Versioned explicit owner-approved thresholds stored }
+  /v1/action-policies:
+    post:
+      x-required-scope: actions:policy:write
+      responses:
+        '201': { description: Versioned policy stored; action effects still require separate approval and executor configuration }
+  /v1/api-keys/{key_id}:
+    delete:
+      x-required-scope: api_keys:admin
+      parameters:
+        - { in: path, name: key_id, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '204': { description: Tenant API key revoked }
+components:
+  schemas:
+    RuleEvaluationRequest:
+      type: object
+      additionalProperties: false
+      required: [version, dataset_version]
+      properties:
+        version: { type: integer, minimum: 1 }
+        dataset_version: { type: string, minLength: 1, maxLength: 128 }
+    RuleDatasetRegistration:
+      type: object
+      additionalProperties: false
+      required: [dataset_version, samples]
+      properties:
+        dataset_version: { type: string, minLength: 1, maxLength: 128 }
+        samples:
+          type: array
+          minItems: 4
+          maxItems: 1000
+          description: Each gold and temporal_holdout split must contain alertable and not_alertable samples.
+          items: { $ref: '#/components/schemas/RuleDatasetSample' }
+    RuleDatasetSample:
+      type: object
+      additionalProperties: false
+      required: [split, label, event, watchlist_version, entity_id, entity_type, aliases]
+      properties:
+        split: { type: string, enum: [gold, temporal_holdout] }
+        label: { type: string, enum: [alertable, not_alertable] }
+        event: { type: object, description: Serialized TaQ Event contract }
+        watchlist_version: { type: integer, minimum: 1 }
+        entity_id: { type: string, format: uuid }
+        entity_type: { type: string, enum: [brand, domain, organization] }
+        aliases:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            additionalProperties: false
+            required: [value, kind]
+            properties:
+              value: { type: string, minLength: 1, maxLength: 253 }
+              kind: { type: string, enum: [exact, alias, domain, negative] }
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque API key; only a BLAKE3 hash is stored

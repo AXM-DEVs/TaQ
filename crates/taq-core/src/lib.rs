@@ -3,14 +3,33 @@ use serde_json::Value;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Event {
+    /// Versión del esquema serializado para evolución compatible.
+    #[serde(default = "default_schema_version")]
+    pub schema_version: u16,
     /// Hash determinista de source + id nativo; hace idempotente la ingesta.
     pub id: String,
     pub source: String,
     pub kind: String,
     pub entity_ids: Vec<String>,
     pub occurred_at_ms: i64,
+    /// Indicates whether the occurrence timestamp came from the source or a capture-time fallback.
+    #[serde(default)]
+    pub occurred_at_quality: TimestampQuality,
     pub ingested_at_ms: i64,
     pub payload: Value,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TimestampQuality {
+    Source,
+    CaptureTime,
+    #[default]
+    Unknown,
+}
+
+fn default_schema_version() -> u16 {
+    1
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -46,17 +65,19 @@ pub struct Action {
 
 #[cfg(test)]
 mod tests {
-    use super::{Action, Event, Signal, SignalKind};
+    use super::{Action, Event, Signal, SignalKind, TimestampQuality};
     use serde_json::json;
 
     #[test]
     fn event_round_trips_with_json_payload_and_timestamps() {
         let event = Event {
+            schema_version: 2,
             id: "stable-id".into(),
             source: "synthetic".into(),
             kind: "mention".into(),
             entity_ids: vec!["entity-1".into()],
             occurred_at_ms: 1_700_000_000_000,
+            occurred_at_quality: TimestampQuality::Source,
             ingested_at_ms: 1_700_000_000_100,
             payload: json!({"text": "TaQ", "score": 1}),
         };
@@ -68,6 +89,23 @@ mod tests {
         assert_eq!(value["id"], "stable-id");
         assert_eq!(value["entity_ids"][0], "entity-1");
         assert_eq!(value["payload"]["text"], "TaQ");
+    }
+
+    #[test]
+    fn event_without_schema_version_defaults_to_version_one() {
+        let encoded = r#"{"id":"legacy","source":"test","kind":"mention","entity_ids":[],"occurred_at_ms":1,"ingested_at_ms":2,"payload":{}}"#;
+        let event: Event = serde_json::from_str(encoded).expect("legacy event deserializes");
+
+        assert_eq!(event.schema_version, 1);
+        assert_eq!(event.occurred_at_quality, TimestampQuality::Unknown);
+    }
+
+    #[test]
+    fn timestamp_quality_serializes_as_a_stable_string() {
+        assert_eq!(
+            serde_json::to_string(&TimestampQuality::CaptureTime).unwrap(),
+            "\"capture_time\""
+        );
     }
 
     #[test]

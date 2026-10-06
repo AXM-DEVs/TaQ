@@ -1,0 +1,18 @@
+<clickhouse>
+    <dead_letter_queue>
+        <database>system</database>
+        <table>dead_letter_queue</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>5000</flush_interval_milliseconds>
+    </dead_letter_queue>
+    <prometheus>
+        <port>9363</port>
+        <endpoint>/metrics</endpoint>
+        <metrics>true</metrics>
+        <asynchronous_metrics>true</asynchronous_metrics>
+        <events>true</events>
+        <errors>true</errors>
+        <histograms>true</histograms>
+        <dimensional_metrics>true</dimensional_metrics>
+    </prometheus>
+</clickhouse>

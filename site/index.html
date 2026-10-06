@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b33">
+  <meta name="description" content="TaQ es un motor modular de inteligencia contextual defensiva. Conecta señales públicas con contexto y hallazgos explicables. En desarrollo y pensado para ser gratuito.">
+  <title>TaQ — Cada señal, con contexto</title>
+  <link rel="icon" href="assets/taq-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="TaQ, inicio"><span class="brand-mark" aria-hidden="true">T<span>a</span>Q</span><span class="brand-name">inteligencia contextual</span></a>
+    <nav aria-label="Navegación principal">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#estado">Estado</a>
+      <a href="#principios">Principios</a>
+    </nav>
+    <a class="header-link" href="#proyecto">Conoce el proyecto <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="availability"><span class="status-dot"></span> Proyecto independiente · En desarrollo</p>
+        <h1 id="hero-title">Cada señal,<br>con <em>contexto.</em></h1>
+        <p class="hero-intro">TaQ conecta información pública con lo que importa: tus entidades vigiladas, reglas explicables y hallazgos que una persona puede revisar.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#como-funciona">Descubre cómo funciona <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="#estado">Ver el estado real <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="hero-note">Gratuito por propósito. Todavía no es un servicio público desplegado.</p>
+      </div>
+      <figure class="hero-visual">
+        <img src="assets/signal-map.svg" alt="Diagrama del flujo TaQ: fuentes públicas pasan por ingesta, contexto y reglas antes de producir hallazgos revisables." width="760" height="620">
+        <figcaption><span>El recorrido de una señal</span><span>Esquema conceptual del motor</span></figcaption>
+      </figure>
+      <div class="hero-bottom"><span>Observación defensiva</span><span class="hero-bottom-rule"></span><span>Decisiones con revisión humana</span></div>
+    </section>
+
+    <section class="intro-section section-pad" id="proyecto" aria-labelledby="intro-title">
+      <div class="section-heading">
+        <p class="section-label">Una herramienta en construcción</p>
+        <h2 id="intro-title">Menos ruido.<br><em>Más relación.</em></h2>
+      </div>
+      <div class="intro-text">
+        <p>Internet produce señales todo el tiempo. Por separado, un cambio en un feed o una publicación dice poco. Cuando se relaciona con una marca, un dominio u organización que te importa, puede convertirse en algo que merece atención.</p>
+        <p>TaQ está construyéndose para recorrer ese camino de forma trazable: desde fuentes públicas hasta hallazgos contextualizados, con reglas explícitas y revisión humana antes de cualquier acción.</p>
+        <a class="underlined-link" href="#como-funciona">El flujo, paso a paso <span aria-hidden="true">↘</span></a>
+      </div>
+    </section>
+
+    <section class="flow-section section-pad" id="como-funciona" aria-labelledby="flow-title">
+      <div class="flow-heading">
+        <div><p class="section-label">Del dato a la decisión</p><h2 id="flow-title">Una cadena que<br>conserva el <em>porqué.</em></h2></div>
+        <p>El objetivo no es automatizar a ciegas. Es dejar claro de dónde vino una señal, por qué se relacionó con algo vigilado y qué revisión necesita.</p>
+      </div>
+      <ol class="flow-list">
+        <li><span class="flow-index">01</span><div><h3>Ingerir</h3><p>Conectores reciben señales públicas de RSS, Wikimedia y Bluesky.</p></div><span class="flow-kind">Fuentes</span></li>
+        <li><span class="flow-index">02</span><div><h3>Contextualizar</h3><p>Una señal se compara con entidades vigiladas y el contexto registrado para ellas.</p></div><span class="flow-kind">Entidades</span></li>
+        <li><span class="flow-index">03</span><div><h3>Inferir</h3><p>Reglas explícitas y versionadas ayudan a explicar qué patrón se detectó.</p></div><span class="flow-kind">Reglas</span></li>
+        <li><span class="flow-index">04</span><div><h3>Coordinar</h3><p>El resultado puede convertirse en un hallazgo revisable y una acción pendiente de aprobación.</p></div><span class="flow-kind">Revisión humana</span></li>
+        <li><span class="flow-index">05</span><div><h3>Aprender</h3><p>El feedback propone mejoras gobernadas; los cambios requieren revisión, no se aplican solos.</p></div><span class="flow-kind">Mejora controlada</span></li>
+      </ol>
+      <p class="flow-caveat">Estas cinco etapas describen la dirección del producto. Su implementación y validación todavía están en curso.</p>
+    </section>
+
+    <section class="status-section section-pad" id="estado" aria-labelledby="status-title">
+      <div class="status-topline"><p class="section-label">Transparencia del proyecto</p><span class="status-badge"><span class="status-dot"></span> Desarrollo activo</span></div>
+      <div class="status-layout">
+        <h2 id="status-title">Lo que ya existe.<br><em>Lo que falta.</em></h2>
+        <div class="status-copy"><p>TaQ ya reúne piezas reales del motor: conectores, transporte de eventos, persistencia, API, reglas, hallazgos y un flujo de aprobación. Aún no se ha demostrado como conjunto listo para uso público.</p><p>La validación de extremo a extremo, el endurecimiento operativo y las garantías de seguridad y privacidad siguen siendo trabajo pendiente. Este sitio presenta el proyecto, no ofrece una plataforma en producción.</p></div>
+      </div>
+      <div class="status-columns">
+        <div class="status-column status-current"><h3><span class="column-mark" aria-hidden="true">✓</span> En el código hoy</h3><ul><li>Conectores RSS, Wikimedia y Bluesky</li><li>Normalización, deduplicación y entrega de eventos</li><li>Componentes de contexto, reglas y hallazgos</li><li>API implementada (operatividad pendiente de validar), CLI, observabilidad local e infraestructura Compose</li></ul></div>
+        <div class="status-column status-next"><h3><span class="column-mark" aria-hidden="true">↗</span> Próximos frentes</h3><ul><li>Validar los recorridos E2E y recuperación con CI</li><li>Resolver migraciones y operación de servicios</li><li>Completar revisión de seguridad, privacidad y retención</li><li>Medir calidad y carga antes de habilitar uso público</li></ul></div>
+      </div>
+      <p class="status-footnote">La presencia de código para una etapa no significa que esté validada ni lista para producción. Sin fecha prometida; primero, evidencia.</p>
+    </section>
+
+    <section class="free-section section-pad" id="principios" aria-labelledby="free-title">
+      <div class="free-art" aria-hidden="true"><div class="free-ring ring-one"></div><div class="free-ring ring-two"></div><div class="free-core">TaQ<span>para observar<br>con criterio</span></div><span class="free-node node-one">público</span><span class="free-node node-two">trazable</span><span class="free-node node-three">humano</span></div>
+      <div class="free-copy"><h2 id="free-title">La inteligencia útil no debería empezar con una <em>factura.</em></h2><p>TaQ se construye con la intención de ofrecerse gratuitamente. No está pensado como un producto en venta ni como un plan comercial. La prioridad es que su propósito, sus límites y su funcionamiento puedan entenderse con claridad.</p><p>AXM lo desarrolla de forma independiente. El alcance público y las condiciones finales se definirán cuando el motor haya superado las validaciones que todavía faltan.</p><div class="creator-signature"><span class="signature-mark">AXM</span><span><strong>AXM</strong><small>Creador independiente</small></span></div></div>
+    </section>
+
+    <section class="closing-section" aria-labelledby="closing-title"><div class="closing-ornament" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><p class="section-label">Construir con evidencia</p><h2 id="closing-title">Una señal aislada<br>es solo el <em>principio.</em></h2><a class="button button-light" href="#inicio">Volver al comienzo <span aria-hidden="true">↑</span></a><p>TaQ · Inteligencia contextual defensiva · Proyecto gratuito en desarrollo</p></section>
+  </main>
+  <footer class="site-footer"><a class="footer-brand" href="#inicio">TaQ</a><p>Creado por AXM, creador independiente.</p><a href="#estado">Estado del proyecto <span aria-hidden="true">↑</span></a><span>Una señal aislada también merece contexto.</span></footer>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/MotionPathPlugin.min.js" defer></script>
+  <script src="motion.js" defer></script>
+</body>
+</html>

@@ -23,9 +23,9 @@ El motor Kafka de ClickHouse usa seis consumidores, uno por partición, con un t
 
 A 2026-09-30, se fijan tags estables publicados para Redpanda `v26.2.3`, ClickHouse `26.9.2.8`, Redis `8.10.2` y pgvector `0.8.6-pg18` (PostgreSQL 18). Se usan versiones explícitas en `.env.example`, no `latest`.
 
-## Decisión abierta: deduplicación
+## Deduplicación
 
-La ingestión debe ser idempotente mediante ids deterministas. Queda abierta la elección entre deduplicar aguas arriba, antes de persistir, o usar `ReplacingMergeTree` y aceptar su semántica de consolidación eventual. La Fase 0 no deduplica: ClickHouse conserva cada mensaje consumido, incluidos los duplicados. La métrica `uniqExact(id)` permite medir ids únicos sin alterar el log.
+La ingestión usa ids deterministas. En Fase 0 ClickHouse conserva cada mensaje, incluidos los duplicados; `uniqExact(id)` los mide sin alterar el log. Para la Fase 1 se aceptó deduplicación temporal exacta y acotada en el proceso, según [ADR 0002](0002-deduplicacion-en-ingesta.md). La semántica no evita repeticiones tras reinicio o expulsión por capacidad; los consumidores deben tolerar el mismo id más de una vez.
 
 ## Consecuencias
 
