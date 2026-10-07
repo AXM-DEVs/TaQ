@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "Cargo.toml": {
-    "mtime": 1791311909.064091,
-    "seen": 1791312956.5396843,
-    "ast_hash": "73cd8b4ce587f38c5ed64462753ac177",
+    "mtime": 1791332610.0884073,
+    "seen": 1791334434.9881718,
+    "ast_hash": "3b5be2cb5ec9d605910a5d8387c4ff0e",
     "semantic_hash": ""
   },
   "crates/taq-core/Cargo.toml": {
@@ -24,69 +24,15 @@
     "semantic_hash": ""
   },
   "crates/taq-loadgen/Cargo.toml": {
-    "mtime": 1790901286.923267,
-    "seen": 1790970562.853757,
-    "ast_hash": "e1fb3411047ddea10d5d5e8b81d12551",
+    "mtime": 1791332932.2813373,
+    "seen": 1791334434.9927876,
+    "ast_hash": "6f9216c1fc5e0320e8984178ef5a8e11",
     "semantic_hash": ""
   },
   "crates/taq-loadgen/src/main.rs": {
-    "mtime": 1791062230.159403,
-    "seen": 1791064852.4157772,
-    "ast_hash": "a5bafe6ebc3e0cddcaeb9912ba3f1b0c",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/SKILL.md": {
-    "mtime": 1790807401.7718184,
-    "seen": 1790808803.209212,
-    "ast_hash": "0f57b61141afe7b743273aec47c49dcc",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/add-watch.md": {
-    "mtime": 1790807381.0429037,
-    "seen": 1790808803.2092133,
-    "ast_hash": "c1f65eb4102ad515149303c7f296b718",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/exports.md": {
-    "mtime": 1790807381.0478797,
-    "seen": 1790808803.2092144,
-    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/extraction-spec.md": {
-    "mtime": 1790807381.0663984,
-    "seen": 1790808803.2092156,
-    "ast_hash": "bf895ec4d4e40f5f66f7d31c2a9bd4a7",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/github-and-merge.md": {
-    "mtime": 1790807381.0695348,
-    "seen": 1790808803.209217,
-    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/hooks.md": {
-    "mtime": 1790807381.0695348,
-    "seen": 1790808803.2092185,
-    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/query.md": {
-    "mtime": 1790807381.0710933,
-    "seen": 1790808803.20922,
-    "ast_hash": "3c46f8ad006874260614ed8657d02307",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/transcribe.md": {
-    "mtime": 1790807381.0737014,
-    "seen": 1790808803.2092211,
-    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
-    "semantic_hash": ""
-  },
-  ".codex/skills/graphify/references/update.md": {
-    "mtime": 1790807381.0757535,
-    "seen": 1790808803.209222,
-    "ast_hash": "9378bd03d56baaf78bd738ab3848f142",
+    "mtime": 1791332934.9136064,
+    "seen": 1791334434.9927921,
+    "ast_hash": "085be1a26029a6997c99a9f8f4c803ab",
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
@@ -108,9 +54,9 @@
     "semantic_hash": ""
   },
   "deploy/docker-compose.yml": {
-    "mtime": 1791312920.0308826,
-    "seen": 1791312956.5398118,
-    "ast_hash": "381dcc841f2e73056b010a9420576ea6",
+    "mtime": 1791333854.85615,
+    "seen": 1791334435.0220594,
+    "ast_hash": "d3d7434cbd24f7496dda24b2476b297f",
     "semantic_hash": ""
   },
   "docs/adr/0001-arquitectura-y-stack.md": {
@@ -132,9 +78,9 @@
     "semantic_hash": ""
   },
   "crates/taq-ingest/Cargo.toml": {
-    "mtime": 1791066828.218959,
-    "seen": 1791160308.7613564,
-    "ast_hash": "1a8068884f3712975d667e265dd2d0be",
+    "mtime": 1791332913.2592754,
+    "seen": 1791334434.9909022,
+    "ast_hash": "95c06afc295b53585507368cefb523c7",
     "semantic_hash": ""
   },
   "crates/taq-ingest/src/dedup.rs": {
@@ -156,9 +102,9 @@
     "semantic_hash": ""
   },
   "crates/taq-ingest/src/pipeline.rs": {
-    "mtime": 1791164420.0524328,
-    "seen": 1791165834.2158098,
-    "ast_hash": "249f7862ce124d5c10e22836f419d4d5",
+    "mtime": 1791332914.9620447,
+    "seen": 1791334434.9919765,
+    "ast_hash": "842d97e754f25db73ffebdbdce89b131",
     "semantic_hash": ""
   },
   "crates/taq-ingest/src/source.rs": {
@@ -168,15 +114,15 @@
     "semantic_hash": ""
   },
   "crates/taq-ingestd/Cargo.toml": {
-    "mtime": 1791083077.460702,
-    "seen": 1791160308.7616777,
-    "ast_hash": "cad68ef5eb59d58d3c2f270a5ddeb2c1",
+    "mtime": 1791332915.4619155,
+    "seen": 1791334434.9923794,
+    "ast_hash": "385026e7c47e046ce06dd2ac9765f649",
     "semantic_hash": ""
   },
   "crates/taq-ingestd/src/main.rs": {
-    "mtime": 1791164494.9078927,
-    "seen": 1791165834.215818,
-    "ast_hash": "9637de061573caa77a215f35d3600803",
+    "mtime": 1791332970.4086354,
+    "seen": 1791334434.9927676,
+    "ast_hash": "c90243363f7be8bbbbb34f19cefb5e48",
     "semantic_hash": ""
   },
   "deploy/grafana/dashboards/overview.json": {
@@ -264,15 +210,15 @@
     "semantic_hash": ""
   },
   "CONTEXTO_PROYECTO.md": {
-    "mtime": 1791313412.0917082,
-    "seen": 1791313460.2042177,
-    "ast_hash": "ee22fd2680cf5be47e6a21318c14ab31",
+    "mtime": 1791333923.0841527,
+    "seen": 1791334435.021288,
+    "ast_hash": "14672e88a2d0a2b256a37f1a23646557",
     "semantic_hash": ""
   },
   "docs/roadmap/plan-implementacion-motor.md": {
-    "mtime": 1791313412.1077094,
-    "seen": 1791313460.2042782,
-    "ast_hash": "593ce3c1953c6065c164f47c014ea579",
+    "mtime": 1791333923.5084865,
+    "seen": 1791334435.0284615,
+    "ast_hash": "960d66e7ee6878b211f8a9159868749c",
     "semantic_hash": ""
   },
   "deploy/clickhouse/init.sql": {
@@ -288,9 +234,9 @@
     "semantic_hash": ""
   },
   "crates/taq-api/Cargo.toml": {
-    "mtime": 1791312159.63079,
-    "seen": 1791312956.5396876,
-    "ast_hash": "3a17e60fb56afb78124dd5c01da7de93",
+    "mtime": 1791332911.7382166,
+    "seen": 1791334434.9881768,
+    "ast_hash": "c885a4fd8b7c3e3aaca0bc26f92abf3d",
     "semantic_hash": ""
   },
   "crates/taq-api/src/bin/taqctl.rs": {
@@ -300,15 +246,15 @@
     "semantic_hash": ""
   },
   "crates/taq-api/src/main.rs": {
-    "mtime": 1791313421.6410017,
-    "seen": 1791313460.2040756,
-    "ast_hash": "abbd195cd6cab3ca55aeb7002236a5b7",
+    "mtime": 1791333985.274429,
+    "seen": 1791334434.9884624,
+    "ast_hash": "add23b90163031d6ae9971182bd04ab9",
     "semantic_hash": ""
   },
   "crates/taq-dlq-replay/Cargo.toml": {
-    "mtime": 1791066966.2993715,
-    "seen": 1791160308.7613366,
-    "ast_hash": "3b5b047598774860be0aa349387661f8",
+    "mtime": 1791332916.3602772,
+    "seen": 1791334434.990607,
+    "ast_hash": "7c13b9df76dbd6288be182c2d2d41af8",
     "semantic_hash": ""
   },
   "crates/taq-dlq-replay/src/lib.rs": {
@@ -318,9 +264,9 @@
     "semantic_hash": ""
   },
   "crates/taq-dlq-replay/src/main.rs": {
-    "mtime": 1791068453.0961857,
-    "seen": 1791160308.7613497,
-    "ast_hash": "b4a4435e84141fe9f4b4d3e45c92097d",
+    "mtime": 1791332931.556318,
+    "seen": 1791334434.9908984,
+    "ast_hash": "50f3ca2fa78685868772d3703c54aabf",
     "semantic_hash": ""
   },
   "crates/taq-ingestd/src/config.rs": {
@@ -342,15 +288,15 @@
     "semantic_hash": ""
   },
   "crates/taq-state/Cargo.toml": {
-    "mtime": 1791311909.3283064,
-    "seen": 1791312956.5397365,
-    "ast_hash": "dd814d3274f22288eccaaa2fd1cf376a",
+    "mtime": 1791331908.9864855,
+    "seen": 1791334434.9937377,
+    "ast_hash": "16c8546e00453b083e9edfe1a153890a",
     "semantic_hash": ""
   },
   "crates/taq-state/src/lib.rs": {
-    "mtime": 1791313091.6785078,
-    "seen": 1791313460.2041326,
-    "ast_hash": "1318eec1271534e7e9f9e54c8c519ae0",
+    "mtime": 1791333142.5263333,
+    "seen": 1791334434.993742,
+    "ast_hash": "2fc8acb233c270ee027180f0ba0c12f7",
     "semantic_hash": ""
   },
   "deploy/clickhouse/migrations/0003_events_replay_idempotence.sql": {
@@ -456,15 +402,15 @@
     "semantic_hash": ""
   },
   "docs/operations/product-api.md": {
-    "mtime": 1791166171.271005,
-    "seen": 1791306994.18826,
-    "ast_hash": "9eba1d0d06c3a2b7590e6ee073b006fe",
+    "mtime": 1791333645.7229917,
+    "seen": 1791334435.0276525,
+    "ast_hash": "b615719b8f523666413bf8dfe6a35550",
     "semantic_hash": ""
   },
   "docs/operations/production-runbook.md": {
-    "mtime": 1791163351.9173033,
-    "seen": 1791163510.3778784,
-    "ast_hash": "d1abbebe3e97c6cf15b03cac662531d2",
+    "mtime": 1791333855.0973692,
+    "seen": 1791334435.0276556,
+    "ast_hash": "561892bd974024a454cc701cee81191c",
     "semantic_hash": ""
   },
   "docs/operations/release-evidence-template.md": {
@@ -480,9 +426,9 @@
     "semantic_hash": ""
   },
   "docs/security/threat-model.md": {
-    "mtime": 1791163351.6350944,
-    "seen": 1791163510.3778844,
-    "ast_hash": "fc8165ade565f164f05058d13172c826",
+    "mtime": 1791332610.0899298,
+    "seen": 1791334435.028464,
+    "ast_hash": "df09070621ce85f4c3d375fbd567d15c",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-03-f2-reliable-delivery.md": {
@@ -597,6 +543,834 @@
     "mtime": 1791310566.8495734,
     "seen": 1791311720.3448317,
     "ast_hash": "92d0ab3a20d67867937d6631f1d7dc14",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/command-metadata.json": {
+    "mtime": 1791314822.6310942,
+    "seen": 1791322602.3807979,
+    "ast_hash": "533063bcdd4e150bf9037bbb1f00402a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/data/font-index-failures.json": {
+    "mtime": 1791314822.6320941,
+    "seen": 1791322602.38081,
+    "ast_hash": "c14048ea4e2b4a062933664822bc0399",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/impeccable": {
+    "mtime": 1791314822.6360953,
+    "seen": 1791322602.3808143,
+    "ast_hash": "955cbafd2f055911adc7f56cab0efc47",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/live-browser-dom.js": {
+    "mtime": 1791314822.6380944,
+    "seen": 1791322602.3808172,
+    "ast_hash": "c5da6b95a6184ec6f76d5acbaea98c50",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/live-browser-ignores.js": {
+    "mtime": 1791314822.639094,
+    "seen": 1791322602.380821,
+    "ast_hash": "dd05503f92e1cf9b3feedbb19070f59e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/live-browser-session.js": {
+    "mtime": 1791314822.6401036,
+    "seen": 1791322602.3808239,
+    "ast_hash": "a24c3e240af5d533f8bdc1daf364aa65",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/live-browser.js": {
+    "mtime": 1791314822.6421566,
+    "seen": 1791322602.3808274,
+    "ast_hash": "480de927201708f5bc41bbba5970efb5",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/scripts/modern-screenshot.umd.js": {
+    "mtime": 1791314822.643167,
+    "seen": 1791322602.38083,
+    "ast_hash": "4fe5f9e490ab4f107afc707d7eafc819",
+    "semantic_hash": ""
+  },
+  "site/motion.js": {
+    "mtime": 1791319353.8235126,
+    "seen": 1791322602.3987322,
+    "ast_hash": "c2718c63fb2a2271fa4f7a352eb6abb0",
+    "semantic_hash": ""
+  },
+  "site/vendor/MotionPathPlugin.min.js": {
+    "mtime": 499162500.0,
+    "seen": 1791322602.3987374,
+    "ast_hash": "0eaf1662fc52a560918f37743b384220",
+    "semantic_hash": ""
+  },
+  "site/vendor/ScrollTrigger.min.js": {
+    "mtime": 499162500.0,
+    "seen": 1791322602.3987405,
+    "ast_hash": "5445d0e95e612449839d2462ba8ab7d0",
+    "semantic_hash": ""
+  },
+  "site/vendor/gsap.min.js": {
+    "mtime": 499162500.0,
+    "seen": 1791322602.3987434,
+    "ast_hash": "bf3fd8ec2a5d9f4531b4c310222361f8",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/hf-ids-stamped.json": {
+    "mtime": 1791321647.3005247,
+    "seen": 1791322602.398746,
+    "ast_hash": "755d34d000982b7376d1fa8f4c4b0ca8",
+    "semantic_hash": ""
+  },
+  "taq-video/.media/preferences.json": {
+    "mtime": 1791320970.895267,
+    "seen": 1791322602.3987486,
+    "ast_hash": "865d2ec64135a1f1eac5d2ac0179f242",
+    "semantic_hash": ""
+  },
+  "taq-video/hyperframes.json": {
+    "mtime": 1791328290.715985,
+    "seen": 1791334435.0038137,
+    "ast_hash": "80d300dd25024165691d726ad37ba53d",
+    "semantic_hash": ""
+  },
+  "taq-video/meta.json": {
+    "mtime": 1791319708.2106812,
+    "seen": 1791322602.3987541,
+    "ast_hash": "6aed356f67654b47b7d3f638270a0628",
+    "semantic_hash": ""
+  },
+  "taq-video/package.json": {
+    "mtime": 1791328305.6638043,
+    "seen": 1791334435.0040667,
+    "ast_hash": "2fbdde9dbd52db18c2de2d74133d8288",
+    "semantic_hash": ""
+  },
+  "taq-video/scripts/assemble.mjs": {
+    "mtime": 1791320816.8403296,
+    "seen": 1791322602.3987598,
+    "ast_hash": "d83468e934d1671e2bf2a927f3417666",
+    "semantic_hash": ""
+  },
+  "taq-video/scripts/run-hyperframes.mjs": {
+    "mtime": 1791320433.660817,
+    "seen": 1791322602.3987632,
+    "ast_hash": "52ce2836f6b5c136aebe5e481d3ae9fa",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/SKILL.md": {
+    "mtime": 1791314822.5589938,
+    "seen": 1791322602.398766,
+    "ast_hash": "1902e3c7abaa88a05ed16cc92ecffb0e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/agents/openai.yaml": {
+    "mtime": 1791314822.5650048,
+    "seen": 1791322602.398769,
+    "ast_hash": "f6a36117ebc5ff8f67efb518ad1fe775",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/adapt.md": {
+    "mtime": 1791314822.5740147,
+    "seen": 1791322602.3987715,
+    "ast_hash": "c5515c569e368512b400926114861543",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/adapt.native.md": {
+    "mtime": 1791314822.5750132,
+    "seen": 1791322602.3987737,
+    "ast_hash": "d45a12935db7bf28b64dfeb46fca6ab6",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/android.md": {
+    "mtime": 1791314822.576013,
+    "seen": 1791322602.3987765,
+    "ast_hash": "18f5d94b2c51ac3bfede3b209660bbb5",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/animate.md": {
+    "mtime": 1791314822.5770128,
+    "seen": 1791322602.3987794,
+    "ast_hash": "610f85bc3d6d370810836681204b015d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/audit.md": {
+    "mtime": 1791314822.5770128,
+    "seen": 1791322602.3987823,
+    "ast_hash": "7d77d13e7e8c632d292edb345e2fbc03",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/audit.native.md": {
+    "mtime": 1791314822.579052,
+    "seen": 1791322602.3987849,
+    "ast_hash": "62ebbd0cb9c871be414c90bf82410131",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/bolder.md": {
+    "mtime": 1791314822.58006,
+    "seen": 1791322602.3987875,
+    "ast_hash": "a084531985d83e34538727961ed51470",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/clarify.md": {
+    "mtime": 1791314822.5810606,
+    "seen": 1791322602.3987906,
+    "ast_hash": "413da6eb075a6c3ed05de43f760f3be8",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/colorize.md": {
+    "mtime": 1791314822.58206,
+    "seen": 1791322602.3987937,
+    "ast_hash": "0bf2887698d75473acd5a5b0ccbe1d3e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/component-review.md": {
+    "mtime": 1791314822.5830612,
+    "seen": 1791322602.3987968,
+    "ast_hash": "5f7dc06c0f96c6c8286460db16b85851",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/craft-floor.md": {
+    "mtime": 1791314822.5830612,
+    "seen": 1791322602.3987997,
+    "ast_hash": "2c497f436c7dbf35b008b174161b861a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/craft.md": {
+    "mtime": 1791314822.584061,
+    "seen": 1791322602.3988028,
+    "ast_hash": "9075911f45c58c15a720f8188b2738f4",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/critique.md": {
+    "mtime": 1791314822.5850608,
+    "seen": 1791322602.3988059,
+    "ast_hash": "994e5b43a304843939443e48d11ef318",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/degraded/asset-producer.md": {
+    "mtime": 1791314822.587061,
+    "seen": 1791322602.3988085,
+    "ast_hash": "be054ab582ecd532dab8f6b8db2fe08e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/degraded/documenter.md": {
+    "mtime": 1791314822.5880623,
+    "seen": 1791322602.3988116,
+    "ast_hash": "a38215374db267ad2be047a2a58cc816",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/degraded/finish-reviewer.md": {
+    "mtime": 1791314822.5890613,
+    "seen": 1791322602.3988147,
+    "ast_hash": "8bf8914a9b4ab0ccfac44ebf3ae4444d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/degraded/manual-edit-applier.md": {
+    "mtime": 1791314822.5900686,
+    "seen": 1791322602.3988178,
+    "ast_hash": "1652cf7a403f11f4d57382e5ccec6999",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/delight.md": {
+    "mtime": 1791314822.5900686,
+    "seen": 1791322602.398821,
+    "ast_hash": "4a4fb8494ddda3d2b4687b938209eb32",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/distill.md": {
+    "mtime": 1791314822.5915797,
+    "seen": 1791322602.3988237,
+    "ast_hash": "551d826d1e8082ec799f575a40967b41",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/doctor.md": {
+    "mtime": 1791314822.592589,
+    "seen": 1791322602.3988266,
+    "ast_hash": "e7e21152b25551bf9d2a6dc2c27d7f6b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/document.md": {
+    "mtime": 1791314822.5935893,
+    "seen": 1791322602.398829,
+    "ast_hash": "4f2674bdf49244e30841448f9d934c40",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/extract.md": {
+    "mtime": 1791314822.594589,
+    "seen": 1791322602.3988316,
+    "ast_hash": "e51e09c25d06f05b6efabb1fc9228d90",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/generate.md": {
+    "mtime": 1791314822.5955894,
+    "seen": 1791322602.3988342,
+    "ast_hash": "716b9a6bae884956989bbb813fd06521",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/harden.md": {
+    "mtime": 1791314822.5965886,
+    "seen": 1791322602.3988364,
+    "ast_hash": "db619bb13c088dae2dd47bc57506cc70",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/hooks.md": {
+    "mtime": 1791314822.59759,
+    "seen": 1791322602.3988388,
+    "ast_hash": "aa625a7e68af557c9932991369da2b5a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/init.md": {
+    "mtime": 1791314822.59759,
+    "seen": 1791322602.3988416,
+    "ast_hash": "a536a753154b82dfb51edb7aecdd4b1b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/ios.md": {
+    "mtime": 1791314822.5990982,
+    "seen": 1791322602.3988445,
+    "ast_hash": "a8f56b5c246ad44e142853ef59a19039",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/layout.md": {
+    "mtime": 1791314822.6006494,
+    "seen": 1791322602.3988469,
+    "ast_hash": "d4db3672050d72bd68949ef6ca614569",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/live-setup.md": {
+    "mtime": 1791314822.6016512,
+    "seen": 1791322602.3988492,
+    "ast_hash": "e870461022ffc424f05fdfdd38ad0367",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/live.md": {
+    "mtime": 1791314822.6026492,
+    "seen": 1791322602.3988526,
+    "ast_hash": "93dde462352552bd4e88fea81d82be5b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/mode-operate.md": {
+    "mtime": 1791314822.60365,
+    "seen": 1791322602.3988557,
+    "ast_hash": "770cdd4b8eb6a9e3ea3e0414fdf9ac2a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/mode-persuade.md": {
+    "mtime": 1791314822.6046486,
+    "seen": 1791322602.3988583,
+    "ast_hash": "9536e656c3fab5a8d85f1dcde6df45aa",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/mode-read.md": {
+    "mtime": 1791314822.6056495,
+    "seen": 1791322602.3988605,
+    "ast_hash": "09353e7df8b71096238a1d18c6fbfe44",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/new-work.md": {
+    "mtime": 1791314822.6066492,
+    "seen": 1791322602.398863,
+    "ast_hash": "d131e3094b154fcbdb44537e36f8c657",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/onboard.md": {
+    "mtime": 1791314822.612802,
+    "seen": 1791322602.3988657,
+    "ast_hash": "e1439e7cb4d19ea29a8990f008aa60f2",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/operate.md": {
+    "mtime": 1791314822.620405,
+    "seen": 1791322602.3988686,
+    "ast_hash": "53a569b985749058f7b178a32e0a157f",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/optimize.md": {
+    "mtime": 1791314822.6212957,
+    "seen": 1791322602.398871,
+    "ast_hash": "69031dca2a97d199862bc514c68c115d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/overdrive.md": {
+    "mtime": 1791314822.6224337,
+    "seen": 1791322602.398874,
+    "ast_hash": "a48f82a5a3dc3cfe974228f8240477ed",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/polish.md": {
+    "mtime": 1791314822.623567,
+    "seen": 1791322602.3988764,
+    "ast_hash": "36ed382b9f9692d0545b34dfd643670b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/quieter.md": {
+    "mtime": 1791314822.623567,
+    "seen": 1791322602.3988795,
+    "ast_hash": "74730b891cd7fa09bc88831c8371d50e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/region-map.md": {
+    "mtime": 1791314822.624576,
+    "seen": 1791322602.3988817,
+    "ast_hash": "fbedb05ecee2abb30af4c473de67c343",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/routing.md": {
+    "mtime": 1791314822.6255763,
+    "seen": 1791322602.398885,
+    "ast_hash": "16cfad4cde91da597491055320b2c3ba",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/shape.md": {
+    "mtime": 1791314822.6265757,
+    "seen": 1791322602.3988876,
+    "ast_hash": "ecf5345d56452d10cd2c9203a7512704",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/typeset.md": {
+    "mtime": 1791314822.6275756,
+    "seen": 1791322602.398891,
+    "ast_hash": "740584b4340794757ebabbd44383fcda",
+    "semantic_hash": ""
+  },
+  ".agents/skills/impeccable/reference/visualize.md": {
+    "mtime": 1791314822.6275756,
+    "seen": 1791322602.3988934,
+    "ast_hash": "22547e92d76af8eecbea216df6cab8a7",
+    "semantic_hash": ""
+  },
+  ".codex/skills/emil-design-eng/SKILL.md": {
+    "mtime": 1791314730.1756053,
+    "seen": 1791322602.398896,
+    "ast_hash": "e79e182b799cd2a0fb5e884f07c9fe33",
+    "semantic_hash": ""
+  },
+  ".codex/skills/gpt-tasteskill/SKILL.md": {
+    "mtime": 1791314778.0389683,
+    "seen": 1791322602.3988986,
+    "ast_hash": "0968d17fda872b36dc35e6bcc0c9af36",
+    "semantic_hash": ""
+  },
+  ".codex/skills/gsap-core/SKILL.md": {
+    "mtime": 1791316608.1929374,
+    "seen": 1791322602.4015517,
+    "ast_hash": "e14974bb48ddfe9e0da3406562b8f18f",
+    "semantic_hash": ""
+  },
+  ".codex/skills/gsap-plugins/SKILL.md": {
+    "mtime": 1791316651.592625,
+    "seen": 1791322602.4015563,
+    "ast_hash": "694d28e8efac50b29b33905ffa62ec4f",
+    "semantic_hash": ""
+  },
+  ".codex/skills/gsap-scrolltrigger/SKILL.md": {
+    "mtime": 1791316608.2333043,
+    "seen": 1791322602.401559,
+    "ast_hash": "4082bbc747d61f4241b2f0c5f2cfbeca",
+    "semantic_hash": ""
+  },
+  ".codex/skills/gsap-timeline/SKILL.md": {
+    "mtime": 1791316608.2343025,
+    "seen": 1791322602.4015691,
+    "ast_hash": "3dfefe09dc41a59f2322734a7694b810",
+    "semantic_hash": ""
+  },
+  "PRODUCT.md": {
+    "mtime": 1791315075.460882,
+    "seen": 1791322602.4022615,
+    "ast_hash": "d9a5d2ef03e392f9fc14b613cd1d4ee6",
+    "semantic_hash": ""
+  },
+  "site/README.md": {
+    "mtime": 1791316860.361972,
+    "seen": 1791322602.4114575,
+    "ast_hash": "eb883ad91642e652420bb6159601b544",
+    "semantic_hash": ""
+  },
+  "site/index.html": {
+    "mtime": 1791319315.6862352,
+    "seen": 1791322602.4114609,
+    "ast_hash": "de8c9128bf1f60d66fdf7bda8c6f480d",
+    "semantic_hash": ""
+  },
+  "site/vendor/README.md": {
+    "mtime": 1791316791.807427,
+    "seen": 1791322602.411464,
+    "ast_hash": "66971e2824d911646c2b9a9a5b217e37",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/caption-skin.html": {
+    "mtime": 1791319894.074376,
+    "seen": 1791322602.411468,
+    "ast_hash": "01c73aad2f47a0e54a45525100f575a9",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/01-hook.md": {
+    "mtime": 1791320467.0358264,
+    "seen": 1791322602.4114707,
+    "ast_hash": "9c94a2b7ed6f54253e3394469efd63c7",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/02-promise.md": {
+    "mtime": 1791320467.038216,
+    "seen": 1791322602.4114738,
+    "ast_hash": "231389aa86e6149c83fe729abb1e7cce",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/03-sources.md": {
+    "mtime": 1791320467.0399172,
+    "seen": 1791322602.4114761,
+    "ast_hash": "1317444fbcdd495e511ed1f26b6662d6",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/04-context.md": {
+    "mtime": 1791320467.0412478,
+    "seen": 1791322602.4114792,
+    "ast_hash": "63cf212e58b444918c8395f327cd4fd0",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/05-rules.md": {
+    "mtime": 1791320467.0434906,
+    "seen": 1791322602.4114823,
+    "ast_hash": "922a65fcd56ef750cdaf27831eb37108",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/06-finding.md": {
+    "mtime": 1791320467.0434906,
+    "seen": 1791322602.4114845,
+    "ast_hash": "06d56b2d9133a447cc7f7d87ef70a57d",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/07-approval.md": {
+    "mtime": 1791320467.045018,
+    "seen": 1791322602.4114864,
+    "ast_hash": "baa74abca5e3379361fa7af04bc610af",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/08-governance.md": {
+    "mtime": 1791320467.0460298,
+    "seen": 1791322602.4114892,
+    "ast_hash": "69b8119060bc6ed45b0e2859420cebd9",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/09-status.md": {
+    "mtime": 1791320467.0475402,
+    "seen": 1791322602.4114914,
+    "ast_hash": "7590f5da5f2130110d9a486e76788ea3",
+    "semantic_hash": ""
+  },
+  "taq-video/.hyperframes/frame-packets/_role.md": {
+    "mtime": 1791320467.0535493,
+    "seen": 1791322602.4114943,
+    "ast_hash": "ded3bde7173f9b30fab256a6b1db994f",
+    "semantic_hash": ""
+  },
+  "taq-video/.media/index.md": {
+    "mtime": 1791320352.7627091,
+    "seen": 1791322602.411499,
+    "ast_hash": "c4433c103c2d808457a259b4255c7df5",
+    "semantic_hash": ""
+  },
+  "taq-video/AGENTS.md": {
+    "mtime": 1791319503.0656047,
+    "seen": 1791322602.4115007,
+    "ast_hash": "d2fa22d82b9fcdf9c4b73cf1a22bad2d",
+    "semantic_hash": ""
+  },
+  "taq-video/BRIEF.md": {
+    "mtime": 1791319929.8146286,
+    "seen": 1791322602.4115036,
+    "ast_hash": "b1e4bab2d4a9b46fe26b757ad9f05f09",
+    "semantic_hash": ""
+  },
+  "taq-video/CLAUDE.md": {
+    "mtime": 1791319503.1196249,
+    "seen": 1791322602.411506,
+    "ast_hash": "d2fa22d82b9fcdf9c4b73cf1a22bad2d",
+    "semantic_hash": ""
+  },
+  "taq-video/README.md": {
+    "mtime": 1791328725.8300402,
+    "seen": 1791334435.034303,
+    "ast_hash": "c6ec793cfff771cc97087d845d558a19",
+    "semantic_hash": ""
+  },
+  "taq-video/STORYBOARD.md": {
+    "mtime": 1791328305.7498302,
+    "seen": 1791334435.0343058,
+    "ast_hash": "9f5f5a002904d38434c091da55328df7",
+    "semantic_hash": ""
+  },
+  "taq-video/assets/fonts/OFL-JetBrains-Mono.txt": {
+    "mtime": 1791320307.408503,
+    "seen": 1791322602.4115155,
+    "ast_hash": "85183f249e4d7a1dc1a19abe9c0e3887",
+    "semantic_hash": ""
+  },
+  "taq-video/assets/fonts/OFL-Manrope.txt": {
+    "mtime": 1791320307.4044735,
+    "seen": 1791322602.4115176,
+    "ast_hash": "575a17a3aea18d107a848538f1c48aba",
+    "semantic_hash": ""
+  },
+  "taq-video/capture/extracted/asset-descriptions.md": {
+    "mtime": 1791319929.8932753,
+    "seen": 1791322602.4115207,
+    "ast_hash": "6a337166e76f76fbcd061afe6232408d",
+    "semantic_hash": ""
+  },
+  "taq-video/capture/extracted/visible-text.txt": {
+    "mtime": 1791319929.8733408,
+    "seen": 1791322602.4115236,
+    "ast_hash": "0de6fb92457fec200378c4ab655dba62",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/01-hook.html": {
+    "mtime": 1791328580.1527436,
+    "seen": 1791334435.035604,
+    "ast_hash": "bed3984d235cdd6e1361b320626c1d88",
+    "semantic_hash": ""
+  },
+  "taq-video/frame.md": {
+    "mtime": 1791320291.2631192,
+    "seen": 1791322602.4115477,
+    "ast_hash": "c63fba3de58b645b045691f82b0e7200",
+    "semantic_hash": ""
+  },
+  "taq-video/index.html": {
+    "mtime": 1791328102.3003561,
+    "seen": 1791334435.0359385,
+    "ast_hash": "d63852d71ccea0cbeb799590da1f30cb",
+    "semantic_hash": ""
+  },
+  "site/assets/taq-mark.svg": {
+    "mtime": 1791315175.4411325,
+    "seen": 1791322602.4115522,
+    "ast_hash": "2a9f06c841de76169f54a5b2850ca315",
+    "semantic_hash": ""
+  },
+  "taq-video/assets/taq-mark.svg": {
+    "mtime": 1791320291.193231,
+    "seen": 1791322602.4119103,
+    "ast_hash": "ba8d61ff1a19500ad8886a94b6fd802e",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/contact-sheet-1.jpg": {
+    "mtime": 1791322540.5546646,
+    "seen": 1791322602.4119127,
+    "ast_hash": "7c01af99793803f8370b460bf48bdb38",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/contact-sheet-2.jpg": {
+    "mtime": 1791322540.8904512,
+    "seen": 1791322602.4119148,
+    "ast_hash": "2965aad90ff2bc0cb13d2837daf2819b",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-00-at-2.5s.png": {
+    "mtime": 1791322535.304713,
+    "seen": 1791322602.4119167,
+    "ast_hash": "092484c04112e2156f28b7dc9718d769",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-01-at-7.5s.png": {
+    "mtime": 1791322535.628792,
+    "seen": 1791322602.4119189,
+    "ast_hash": "acaece7c5c21303e78ff553ec09ebc74",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-02-at-8.9s.png": {
+    "mtime": 1791322535.8488173,
+    "seen": 1791322602.4119208,
+    "ast_hash": "d020e4d08cda8329e8fa2a46123af696",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-03-at-12.5s.png": {
+    "mtime": 1791322536.0907502,
+    "seen": 1791322602.4119232,
+    "ast_hash": "32c6fdedbf1764613208437b34bdf7a3",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-04-at-17.5s.png": {
+    "mtime": 1791322536.2969751,
+    "seen": 1791322602.411925,
+    "ast_hash": "ac83351d658903765570816000461bac",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-05-at-19.2s.png": {
+    "mtime": 1791322536.549942,
+    "seen": 1791322602.4119277,
+    "ast_hash": "be9e1f45c5b47474aa0f17f5911460f1",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-06-at-22.5s.png": {
+    "mtime": 1791322536.741751,
+    "seen": 1791322602.4119296,
+    "ast_hash": "155a731a1cb8855f87e729e5f835fc30",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-07-at-27.5s.png": {
+    "mtime": 1791322536.9571311,
+    "seen": 1791322602.411932,
+    "ast_hash": "482ca78a45f103f3d82ff0f4d18f303f",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-08-at-32.5s.png": {
+    "mtime": 1791322537.2781725,
+    "seen": 1791322602.4119341,
+    "ast_hash": "42a4fab692f8e96c94f33b9133172201",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-09-at-37.5s.png": {
+    "mtime": 1791322537.5161,
+    "seen": 1791322602.4119365,
+    "ast_hash": "e7956144750d632b42429b750b7d53a2",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-10-at-42.5s.png": {
+    "mtime": 1791322537.7219424,
+    "seen": 1791322602.4119387,
+    "ast_hash": "b602140742769a7be31d588f1ca5e5a4",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/frame-11-at-43.65s.png": {
+    "mtime": 1791322537.9168575,
+    "seen": 1791322602.4119406,
+    "ast_hash": "b602140742769a7be31d588f1ca5e5a4",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/contact-sheet.jpg": {
+    "mtime": 1791321224.2452016,
+    "seen": 1791322602.411943,
+    "ast_hash": "c7e697a2122ff05bf9a87b67cc18cfad",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-00-at-2.5s.png": {
+    "mtime": 1791321212.7550075,
+    "seen": 1791322602.4119446,
+    "ast_hash": "3f5f45da37535f4df3f3807fe488e8c3",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-01-at-7.5s.png": {
+    "mtime": 1791321212.9773135,
+    "seen": 1791322602.4119468,
+    "ast_hash": "d1f8708aea6f6fb88589ac8a03ea34c1",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-02-at-12.5s.png": {
+    "mtime": 1791321213.227163,
+    "seen": 1791322602.4119484,
+    "ast_hash": "32c6fdedbf1764613208437b34bdf7a3",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-03-at-17.5s.png": {
+    "mtime": 1791321213.4298537,
+    "seen": 1791322602.4119508,
+    "ast_hash": "d1f8708aea6f6fb88589ac8a03ea34c1",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-04-at-22.5s.png": {
+    "mtime": 1791321213.6191869,
+    "seen": 1791322602.411953,
+    "ast_hash": "d1f8708aea6f6fb88589ac8a03ea34c1",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-05-at-27.5s.png": {
+    "mtime": 1791321213.8804572,
+    "seen": 1791322602.4119549,
+    "ast_hash": "482ca78a45f103f3d82ff0f4d18f303f",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-06-at-32.5s.png": {
+    "mtime": 1791321214.0810156,
+    "seen": 1791322602.4119568,
+    "ast_hash": "d1f8708aea6f6fb88589ac8a03ea34c1",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-07-at-37.5s.png": {
+    "mtime": 1791321214.2999935,
+    "seen": 1791322602.4119594,
+    "ast_hash": "e7956144750d632b42429b750b7d53a2",
+    "semantic_hash": ""
+  },
+  "taq-video/snapshots/review/frame-08-at-42.5s.png": {
+    "mtime": 1791321214.5358934,
+    "seen": 1791322602.4119613,
+    "ast_hash": "d1f8708aea6f6fb88589ac8a03ea34c1",
+    "semantic_hash": ""
+  },
+  "crates/taq-kafka/Cargo.toml": {
+    "mtime": 1791332610.822711,
+    "seen": 1791334434.9927757,
+    "ast_hash": "e0d4ff1b7338f591e8038d9f7910a41b",
+    "semantic_hash": ""
+  },
+  "crates/taq-kafka/src/lib.rs": {
+    "mtime": 1791334266.724001,
+    "seen": 1791334434.9927804,
+    "ast_hash": "d8cba8edf5283da895bbb3742b796325",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plan-ledger-transporte-seguro.md": {
+    "mtime": 1791334255.8828201,
+    "seen": 1791334435.0284667,
+    "ast_hash": "8a2e21482137488d61991de3a45c6924",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-10-06-transporte-seguro.md": {
+    "mtime": 1791334255.6435466,
+    "seen": 1791334435.028999,
+    "ast_hash": "39ea4a8403566735b046f0115df53939",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/02-sources.html": {
+    "mtime": 1791328685.8666346,
+    "seen": 1791334435.0356069,
+    "ast_hash": "3c0ffe6c0990572564ead31046ad8ddc",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/03-context.html": {
+    "mtime": 1791328686.4367485,
+    "seen": 1791334435.035609,
+    "ast_hash": "0767fefad89e2f62537374a3137e78f1",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/04-pipeline.html": {
+    "mtime": 1791334122.3839,
+    "seen": 1791334435.0356114,
+    "ast_hash": "a84bce03daff8e801c6af346409229bb",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/05-finding.html": {
+    "mtime": 1791328580.1557262,
+    "seen": 1791334435.0356135,
+    "ast_hash": "e839226669e1918bc0c3fedf5b8a5968",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/06-status.html": {
+    "mtime": 1791334122.38505,
+    "seen": 1791334435.0356152,
+    "ast_hash": "6e23331b83311814ba16aaaee0eec288",
+    "semantic_hash": ""
+  },
+  "taq-video/compositions/frames/07-closing.html": {
+    "mtime": 1791334122.3865786,
+    "seen": 1791334435.035617,
+    "ast_hash": "c710e483879124f93bbc6ffd82ed76ea",
+    "semantic_hash": ""
+  },
+  "taq-video/out/taq-promo.mp4": {
+    "mtime": 1791328878.9133928,
+    "seen": 1791334435.043746,
+    "ast_hash": "67c4d41f89c13296371bb37d8da688cd",
+    "semantic_hash": ""
+  },
+  "taq-video/renders/video.mp4": {
+    "mtime": 1791322999.2150414,
+    "seen": 1791334435.0437486,
+    "ast_hash": "b298084054ccfd8a786ec5df747aafa8",
     "semantic_hash": ""
   }
 }
