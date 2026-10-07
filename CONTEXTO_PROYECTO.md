@@ -213,4 +213,12 @@ Un cambio incompatible al JSON debe actualizar `schema_version`, lectores/proyec
 - Tarea 4 parcialmente implementada: Compose declara los perfiles locales, pasa opciones TLS/SASL, monta `./secrets` como solo lectura en `/run/taq-secrets` e ignora el directorio en Git. El guard público valida PostgreSQL `verify-full`, Kafka `SASL_SSL`, credenciales no-placeholder y broker/bind antes de DB/listener, y permanece bloqueado hasta completar F10/F11/F12. Sigue pendiente verificar el despliegue real, provisionar secretos/CA, rotación y cobertura de topic-init/health checks seguros. No marcar F10/F12 como aprobadas ni exponer el servicio públicamente.
 - El launcher de `graphify.exe` aún falla con `uv trampoline failed to canonicalize script path`; se actualizó la herramienta local `graphifyy` a 0.9.79 y se ejecutaron query/update por su módulo Python directo. El grafo se regeneró (2936 nodos/5352 relaciones); Graphify guardó backup, no se manipularon a mano los artefactos. No se ejecutaron build, tests, Clippy, Docker ni pruebas E2E.
 
+### Handoff de pausa — 2026-10-06
+
+- Se añadió `docs/operations/continuacion-2026-10-23.md` como punto de reanudación priorizado para cuando vuelva el uso de Codex el 23-oct. Resume rama/commit, conserva el cambio local de `.vscode/codementor-learning.json`, deja claro que TLS aún no está verificado y ordena el cierre F10/F11 antes de la calificación F12.
+- Las pruebas continúan reservadas para F12. Las primeras verificaciones al reanudar deberán cubrir compilación y handshakes PostgreSQL/Kafka; después se ejecutarán E2E, recuperación, restore, CI y pack de evidencia en un ciclo controlado.
+- No ejecutar aún `docker compose down -v`, `docker system prune`, reset de Docker Desktop ni migraciones sobre volúmenes existentes. El estado funcional del perfil app y la salud API/restore siguen sin evidencia.
+- Bloqueos que requieren decisiones de AXM antes de un Go: responsable/jurisdicción, retención y borrado, región/plataforma, destinatario de alertas, RPO/RTO y licencia/SPDX. El producto será gratuito, pero ello no resuelve por sí solo privacidad, términos o disponibilidad.
+- Estado actual sin cambio: NO-GO para publicación abierta; no habilitar el guard público hasta que F10/F11/F12 tengan evidencia reproducible.
+
 
