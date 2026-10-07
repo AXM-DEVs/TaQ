@@ -10,8 +10,16 @@
     const packet = document.querySelector("#signal-packet");
     let cleanupVisibility = () => {};
 
+    gsap.timeline({ defaults: { ease: "power3.out" } })
+      .from(".hero-copy .availability", { y: 8, autoAlpha: 0, duration: 0.24 })
+      .from(".hero-copy h1", { y: 20, autoAlpha: 0, duration: 0.54 }, "-=0.12")
+      .from(".hero-intro", { y: 10, autoAlpha: 0, duration: 0.38 }, "-=0.34")
+      .from(".hero-actions .button", { y: 8, autoAlpha: 0, stagger: 0.06, duration: 0.26 }, "-=0.16")
+      .from(".hero-note", { autoAlpha: 0, duration: 0.18 }, "-=0.1")
+      .from(".hero-visual svg", { clipPath: "inset(0 100% 0 0)", duration: 0.68, ease: "power3.inOut" }, "-=0.42");
+
     if (diagram && packet) {
-      const signal = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.1 });
+      const signal = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.8 });
       signal
         .set(packet, { autoAlpha: 1, scale: 0.8, transformOrigin: "center" })
         .to(packet, { duration: 1.05, motionPath: { path: "#route-source", align: "#route-source", alignOrigin: [0.5, 0.5] }, ease: "none" })
@@ -43,7 +51,38 @@
     }
 
     const steps = gsap.utils.toArray(".flow-list li");
-    if (steps.length) {
+    const flowList = document.querySelector(".flow-list-track");
+    if (steps.length && flowList) {
+      const railProgress = flowList.querySelector(".flow-rail-progress");
+      const railPacket = flowList.querySelector(".flow-rail-packet");
+      const scrollRange = {
+        trigger: flowList,
+        start: "top 64%",
+        end: "bottom 64%",
+        scrub: 0.45,
+        invalidateOnRefresh: true
+      };
+
+      gsap.to(railProgress, {
+        scaleY: 1,
+        ease: "none",
+        scrollTrigger: { ...scrollRange }
+      });
+      gsap.to(railPacket, {
+        y: () => flowList.clientHeight - 64,
+        ease: "none",
+        scrollTrigger: { ...scrollRange }
+      });
+
+      steps.forEach((step) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: "top 54%",
+          end: "bottom 54%",
+          toggleClass: { targets: step, className: "is-current" }
+        });
+      });
+
       gsap.from(steps, {
         y: 12,
         autoAlpha: 0,

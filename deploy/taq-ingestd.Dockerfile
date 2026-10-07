@@ -1,12 +1,12 @@
 FROM rust:1.98.1-bookworm AS build
 WORKDIR /src
-RUN apt-get update && apt-get install -y --no-install-recommends cmake pkg-config build-essential \
+RUN apt-get update && apt-get install -y --no-install-recommends cmake pkg-config build-essential libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 COPY . .
 RUN cargo build --locked --release -p taq-ingestd -p taq-dlq-replay
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libssl3 \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=build /src/target/release/taq-ingestd /usr/local/bin/taq-ingestd
 COPY --from=build /src/target/release/taq-dlq-replay /usr/local/bin/taq-dlq-replay

@@ -1,0 +1,61 @@
+<template>
+  <div data-composition-id="05-finding" id="scene-05" data-width="1920" data-height="1080" data-duration="10" style="position:relative; width:1920px; height:1080px; background:#102b33; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+      #scene-05 { color: #ffffff; font-family: 'Manrope', sans-serif; box-sizing: border-box; padding: 54px 96px; }
+      .header-inner, .mark-inner, .cols-inner, .bottom-inner { opacity: 0; }
+      .header-label { position: absolute; top: 54px; left: 96px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; letter-spacing: 0.1em; color: #e3b45d; }
+      .taq-mark { position: absolute; top: 54px; right: 96px; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 40px; color: #ffffff; }
+      .columns-container { position: absolute; top: 50%; left: 96px; right: 96px; margin-top: -150px; display: flex; justify-content: space-between; align-items: flex-start; }
+      .column { display: flex; flex-direction: column; align-items: center; width: 30%; text-align: center; opacity: 0; }
+      .circle-icon { width: 64px; height: 64px; border-radius: 50%; background-color: #e3b45d; margin-bottom: 32px; display: flex; justify-content: center; align-items: center; }
+      .circle-icon svg { width: 32px; height: 32px; stroke: #102b33; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .col-title { font-size: 48px; font-weight: 600; margin-bottom: 16px; }
+      .col-subtitle { font-size: 32px; font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+      .bottom-line { position: absolute; bottom: 200px; left: 96px; right: 96px; height: 2px; background-color: #e3b45d; }
+      .footer-label { position: absolute; bottom: 54px; right: 96px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 24px; color: #ffffff; opacity: 0.5; }
+    </style>
+    <div class="clip" data-start="0" data-duration="10">
+      <div class="header-inner"><div class="header-label">HALLAZGO · ESQUEMA CONCEPTUAL</div></div>
+      <div class="mark-inner"><div class="taq-mark">TaQ</div></div>
+      <div class="cols-inner">
+        <div class="columns-container">
+          <div class="column">
+            <div class="circle-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            <div class="col-title">Origen trazable</div><div class="col-subtitle">De dónde viene la señal</div>
+          </div>
+          <div class="column">
+            <div class="circle-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="col-title">Regla explícita</div><div class="col-subtitle">Por qué se detectó el patrón</div>
+          </div>
+          <div class="column">
+            <div class="circle-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="col-title">Revisión humana</div><div class="col-subtitle">Una persona decide qué hacer</div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-inner">
+        <div class="bottom-line"></div>
+        <div class="footer-label">Esquema conceptual</div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="05-finding"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["05-finding"] = tl;
+        tl.to(root.querySelector('.header-inner'), { opacity: 1, duration: 1 }, 0);
+        tl.to(root.querySelector('.mark-inner'), { opacity: 1, duration: 1 }, 0);
+        tl.to(root.querySelector('.cols-inner'), { opacity: 1, duration: 0.1 }, 0);
+        tl.fromTo(root.querySelectorAll('.column'), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 1.2, ease: "power3.out" }, 0.5);
+        tl.to(root.querySelector('.bottom-inner'), { opacity: 1, duration: 0.1 }, 0);
+        tl.fromTo(root.querySelector('.bottom-line'), { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.5, ease: "power3.inOut" }, 0.5 + 1.2 * 3);
+        tl.fromTo(root.querySelector('.footer-label'), { opacity: 0 }, { opacity: 1, duration: 1 }, 0.5 + 1.2 * 3);
+      })();
+    </script>
+  </div>
+</template>

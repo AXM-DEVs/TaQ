@@ -5,13 +5,15 @@
 Para trabajar localmente, inicia Compose y luego el servicio:
 
 ```powershell
+$env:TAQ_PG_TLS_MODE = 'disable'
+$env:TAQ_KAFKA_SECURITY_PROTOCOL = 'PLAINTEXT'
+$env:TAQ_DATABASE_URL = 'postgres://taq:taq_dev@127.0.0.1:5432/taq'
 cargo run -p taq-api
 ```
 
-El API se enlaza a `127.0.0.1:8080` por defecto. Crea un tenant y una clave limitada, en vez de asignar todas las capacidades a un mismo principal:
+La shell no carga `.env` automáticamente; conserva estas variables para los comandos de provisionamiento siguientes. El API se enlaza a `127.0.0.1:8080` por defecto. Crea un tenant y una clave limitada, en vez de asignar todas las capacidades a un mismo principal:
 
 ```powershell
-$env:TAQ_DATABASE_URL = 'postgres://taq:taq_dev@127.0.0.1:5432/taq'
 cargo run -p taq-api -- --provision-tenant "Piloto AXM" "watchlist-writer" "watchlist:read,watchlist:write"
 cargo run -p taq-api -- --create-key '<tenant_uuid>' "reviewer" "findings:read,findings:review,feedback:write,actions:approve"
 ```
@@ -30,7 +32,7 @@ cargo run -p taq-api --bin taqctl -- findings list
 
 Una acción solicitada se mantiene `pending`. Un principal distinto puede aprobarla; la transacción cambia el estado, crea el outbox y registra la auditoría. La expiración afecta tanto a solicitudes pendientes como a aprobaciones todavía no despachadas; el dispatcher solo reclama aprobaciones vigentes y las vencidas quedan auditadas y fuera de la cola. `TAQ_ACTION_DISPATCH_ENABLED=false` mantiene el dispatcher interno apagado por defecto. Si se habilita, el dispatcher publica mensajes aprobados a `actions.approved`, con retries y clave idempotente por action ID. **No hay executor externo en esta entrega**: el topic queda dentro de TaQ y no envía correo ni ejecuta una integración. Cualquier consumidor futuro debe comprobar `expires_at`, la autorización vigente y la idempotencia antes de ejecutar un efecto.
 
-El proceso requiere `TAQ_API_PUBLICLY_ROUTABLE=true` para declarar una API expuesta públicamente, y en ese caso exige `TAQ_API_TLS_TERMINATED_UPSTREAM=true`. Esa variable es una afirmación del operador, no una prueba automática; valida TLS, red privada, autenticación de proxy y que no se pueda saltar.
+El modo públicamente enrutable valida la configuración antes de conectarse o abrir el listener. Si `TAQ_API_PUBLICLY_ROUTABLE=true`, exige `TAQ_DATABASE_URL`, `TAQ_KAFKA_BROKER` y `TAQ_API_BIND` explícitos; rechaza credenciales PostgreSQL/SASL de desarrollo, brokers loopback conocidos, bind loopback/puerto 0, PostgreSQL distinto de `verify-full`, Kafka distinto de `SASL_SSL` y ausencia de `TAQ_API_TLS_TERMINATED_UPSTREAM=true`. PostgreSQL valida cadena y hostname con Rustls; los clientes Kafka comparten CA/SASL/mTLS y verifican hostname. Después de esa validación, el arranque público sigue bloqueado hasta completar la calificación F12 y los gates F10/F11. La pila Compose incluida permanece en modo local con `disable`/`PLAINTEXT`, puerto API ligado a loopback y secretos/certificados locales bajo `./secrets` (gitignored), montados como solo lectura en `/run/taq-secrets`. F10/F11/F12 incluyen además la revisión de red/proxy, privacidad, retención/borrado, secretos, restore y CI. La bandera upstream es una afirmación del operador, no prueba la topología ni impide acceso directo.
 
 ## Límites conocidos
 

@@ -1,0 +1,69 @@
+<template>
+  <div data-composition-id="02-sources" id="scene-02" data-width="1920" data-height="1080" data-duration="9" style="position:relative; width:1920px; height:1080px; background:#fbfcf8; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+      #scene-02 { color: #102b33; font-family: 'Manrope', sans-serif; display: flex; flex-direction: column; align-items: center; }
+      .header-inner, .mark-inner, .footer-inner, .headline-inner, .cards-inner, .map-inner { opacity: 0; }
+      .header-label { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; color: #176f68; letter-spacing: 2px; position: absolute; top: 54px; left: 96px; }
+      .taq-mark { position: absolute; top: 54px; right: 96px; width: 48px; height: 48px; }
+      .footer { position: absolute; bottom: 54px; left: 96px; right: 96px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #102b33; opacity: 0.5; }
+      .headline { font-size: 72px; font-weight: 600; margin-top: 140px; text-align: center; }
+      .teal-text { color: #176f68; }
+      .cards-container { display: flex; justify-content: center; gap: 60px; margin-top: 120px; position: relative; z-index: 2; }
+      .source-card { width: 280px; height: 160px; background-color: #176f68; border-radius: 8px; color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; box-shadow: 0 20px 40px rgba(23, 111, 104, 0.15); opacity: 0; }
+      .source-icon { width: 48px; height: 48px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .source-text { font-size: 42px; font-weight: 600; }
+      .map-section { flex: 1; display: flex; flex-direction: column; align-items: center; margin-top: 60px; }
+      .arrows-svg { width: 600px; height: 180px; overflow: visible; }
+      .arrow-path { fill: none; stroke: #e3b45d; stroke-width: 4; stroke-dasharray: 500; stroke-dashoffset: 500; }
+      .map-label { font-family: 'JetBrains Mono', monospace; font-size: 32px; color: #e3b45d; font-weight: 500; margin-top: 30px; letter-spacing: 4px; opacity: 0; }
+    </style>
+    <div class="clip" data-start="0" data-duration="9">
+      <div class="header-inner"><div class="header-label">FUENTES PÚBLICAS</div></div>
+      <div class="mark-inner"><img src="assets/taq-mark.svg" class="taq-mark" alt="TaQ" /></div>
+      <div class="footer-inner"><div class="footer"><span>Señales públicas</span><span>02 / FUENTES</span></div></div>
+      <div class="headline-inner"><div class="headline">Información <span class="teal-text">pública</span></div></div>
+      <div class="cards-inner">
+        <div class="cards-container">
+          <div class="source-card card-1"><span class="source-text">RSS</span></div>
+          <div class="source-card card-2"><span class="source-text">Wiki</span></div>
+          <div class="source-card card-3"><span class="source-text">Feed</span></div>
+        </div>
+      </div>
+      <div class="map-inner">
+        <div class="map-section">
+          <svg class="arrows-svg" viewBox="0 0 600 180">
+            <path class="arrow-path" d="M 100,0 C 100,80 280,100 295,165" />
+            <polygon class="arrow-head" points="295,175 288,155 302,155" fill="#e3b45d" opacity="0" />
+            <path class="arrow-path" d="M 300,0 C 300,80 300,100 300,165" />
+            <polygon class="arrow-head" points="300,175 293,155 307,155" fill="#e3b45d" opacity="0" />
+            <path class="arrow-path" d="M 500,0 C 500,80 320,100 305,165" />
+            <polygon class="arrow-head" points="305,175 298,155 312,155" fill="#e3b45d" opacity="0" />
+          </svg>
+          <div class="map-label">MAPA CONTEXTUAL</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="02-sources"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["02-sources"] = tl;
+        tl.to(root.querySelector('.header-inner'), { opacity: 1, duration: 1.5 }, 0);
+        tl.to(root.querySelector('.mark-inner'), { opacity: 1, duration: 1.5 }, 0);
+        tl.to(root.querySelector('.footer-inner'), { opacity: 1, duration: 1.5 }, 0);
+        tl.fromTo(root.querySelector('.headline-inner'), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }, 0.5);
+        tl.to(root.querySelector('.cards-inner'), { opacity: 1, duration: 0.1 }, 0.5);
+        tl.fromTo(root.querySelectorAll('.source-card'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.3, ease: "back.out(1.2)" }, 1.0);
+        tl.to(root.querySelector('.map-inner'), { opacity: 1, duration: 0.1 }, 2);
+        tl.to(root.querySelectorAll('.arrow-path'), { strokeDashoffset: 0, duration: 1.5, stagger: 0.2, ease: "power2.inOut" }, 2.5);
+        tl.to(root.querySelectorAll('.arrow-head'), { opacity: 1, duration: 0.4, stagger: 0.2, ease: "power2.out" }, 3.8);
+        tl.fromTo(root.querySelector('.map-label'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, 4.2);
+      })();
+    </script>
+  </div>
+</template>

@@ -1,0 +1,15 @@
+TaQ — Cada señal, con contexto
+Proyecto independiente · En desarrollo
+TaQ conecta información pública con tus entidades vigiladas, reglas explicables y hallazgos que una persona puede revisar.
+Gratuito por propósito. Todavía no es un servicio público desplegado.
+
+Conectores reciben señales públicas de RSS, Wikimedia y Bluesky.
+Una señal se compara con entidades vigiladas y su contexto registrado.
+Reglas explícitas y versionadas ayudan a explicar qué patrón se detectó.
+El resultado puede convertirse en un hallazgo revisable y una acción pendiente de aprobación.
+El feedback propone mejoras gobernadas; los cambios requieren revisión, no se aplican solos.
+
+TaQ ya reúne piezas reales del motor, pero aún no se ha demostrado como conjunto listo para uso público.
+La validación de extremo a extremo, el endurecimiento operativo y las garantías de seguridad y privacidad siguen pendientes.
+La presencia de código para una etapa no significa que esté validada ni lista para producción.
+Sin fecha prometida; primero, evidencia.

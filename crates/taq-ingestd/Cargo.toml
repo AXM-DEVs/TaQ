@@ -17,3 +17,4 @@ taq-connector-bluesky = { path = "../taq-connector-bluesky" }
 taq-connector-rss = { path = "../taq-connector-rss" }
 taq-observability = { path = "../taq-observability" }
 taq-state = { path = "../taq-state" }
+taq-kafka = { path = "../taq-kafka" }

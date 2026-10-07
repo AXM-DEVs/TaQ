@@ -1,0 +1,71 @@
+<template>
+  <div data-composition-id="04-pipeline" id="scene-04" data-width="1920" data-height="1080" data-duration="15" style="position:relative; width:1920px; height:1080px; background:#fbfcf8; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+      #scene-04 { color: #102b33; font-family: 'Manrope', sans-serif; box-sizing: border-box; padding: 54px 96px; }
+      .header-inner, .mark-inner, .pipe-inner, .footer-inner { opacity: 0; }
+      .header-label { position: absolute; top: 54px; left: 96px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; letter-spacing: 0.1em; }
+      .taq-mark { position: absolute; top: 54px; right: 96px; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 40px; color: #102b33; }
+      .pipeline-container { position: absolute; top: 50%; left: 96px; right: 96px; margin-top: -100px; display: flex; justify-content: space-between; align-items: center; }
+      .step { display: flex; flex-direction: column; align-items: center; position: relative; }
+      .step-number { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; color: #e3b45d; margin-bottom: 24px; opacity: 0; }
+      .tile { width: 280px; height: 200px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 40px; font-weight: 500; text-align: center; opacity: 0; }
+      .tile.teal { background-color: #176f68; color: #ffffff; }
+      .tile.dark { background-color: #102b33; color: #ffffff; }
+      .tile.dashed { background-color: transparent; border: 4px dashed #e3b45d; color: #102b33; }
+      .tile-label { position: absolute; bottom: -60px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #e3b45d; text-transform: uppercase; text-align: center; width: 280px; opacity: 0; }
+      .arrow-connector { width: 80px; height: 4px; position: relative; margin-top: 80px; }
+      .arrow-connector svg { width: 100%; height: 40px; position: absolute; top: -18px; left: 0; }
+      .arrow-connector path { stroke: #e3b45d; stroke-width: 4; fill: none; stroke-dasharray: 100; stroke-dashoffset: 100; }
+      .signal-dot { position: absolute; top: -30px; left: 140px; width: 20px; height: 20px; background-color: #e3b45d; border-radius: 50%; opacity: 0; }
+      .underscore-line { position: absolute; bottom: -100px; left: 0; width: 100%; height: 2px; background-color: #e3b45d; }
+      .footer-left { position: absolute; bottom: 54px; left: 96px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; }
+      .footer-right { position: absolute; bottom: 54px; right: 96px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 32px; }
+    </style>
+    <div class="clip" data-start="0" data-duration="15">
+      <div class="header-inner"><div class="header-label">FLUJO · ESQUEMA CONCEPTUAL</div></div>
+      <div class="mark-inner"><div class="taq-mark">TaQ</div></div>
+      <div class="footer-inner"><div class="footer-left">Cinco pasos</div><div class="footer-right">04 / FLUJO</div></div>
+      <div class="pipe-inner">
+        <div class="pipeline-container">
+          <div class="signal-dot"></div>
+          <div class="step"><div class="step-number">01</div><div class="tile teal">Ingerir</div></div>
+          <div class="arrow-connector"><svg viewBox="0 0 80 40"><path d="M 0,20 L 70,20 M 60,10 L 70,20 L 60,30"></path></svg></div>
+          <div class="step"><div class="step-number">02</div><div class="tile dark">Contextualizar</div></div>
+          <div class="arrow-connector"><svg viewBox="0 0 80 40"><path d="M 0,20 L 70,20 M 60,10 L 70,20 L 60,30"></path></svg></div>
+          <div class="step"><div class="step-number">03</div><div class="tile teal">Inferir</div></div>
+          <div class="arrow-connector"><svg viewBox="0 0 80 40"><path d="M 0,20 L 70,20 M 60,10 L 70,20 L 60,30"></path></svg></div>
+          <div class="step"><div class="step-number">04</div><div class="tile dark">Coordinar</div></div>
+          <div class="arrow-connector"><svg viewBox="0 0 80 40"><path d="M 0,20 L 70,20 M 60,10 L 70,20 L 60,30"></path></svg></div>
+          <div class="step"><div class="step-number">05</div><div class="tile dashed">Aprender</div><div class="tile-label">dirección del producto</div></div>
+          <div class="underscore-line"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="04-pipeline"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["04-pipeline"] = tl;
+        tl.to(root.querySelector('.header-inner'), { opacity: 1, duration: 1 }, 0);
+        tl.to(root.querySelector('.mark-inner'), { opacity: 1, duration: 1 }, 0);
+        tl.to(root.querySelector('.footer-inner'), { opacity: 1, duration: 1 }, 0);
+        tl.to(root.querySelector('.pipe-inner'), { opacity: 1, duration: 0.1 }, 0);
+
+        tl.fromTo(root.querySelectorAll('.step-number'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 1.5, ease: "power2.out" }, 0.5);
+        tl.fromTo(root.querySelectorAll('.tile'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 1.5, ease: "power3.out" }, 0.6);
+        tl.to(root.querySelectorAll('.arrow-connector path'), { strokeDashoffset: 0, duration: 0.8, stagger: 1.5, ease: "power2.inOut" }, 1.2);
+        tl.fromTo(root.querySelector('.tile-label'), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 0.6 + 1.5 * 4);
+
+        tl.to(root.querySelector('.signal-dot'), { opacity: 1, duration: 0.3 }, 0.5);
+        tl.to(root.querySelector('.signal-dot'), { x: 1400, duration: 1.5 * 4 + 0.8, ease: "none" }, 0.5);
+
+        tl.fromTo(root.querySelector('.underscore-line'), { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.5, ease: "power3.inOut" }, 1.5 * 5 + 0.5);
+      })();
+    </script>
+  </div>
+</template>

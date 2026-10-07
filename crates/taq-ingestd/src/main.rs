@@ -9,6 +9,7 @@ use taq_ingest::{
     KafkaPipeline, KafkaPipelineConfig, RetryPolicy, Source, SourceError, SourceMessage,
     bounded_source_channel, run_pipeline, run_source_with_backoff,
 };
+use taq_kafka::KafkaSecurityConfig;
 use taq_observability::wait_for_shutdown_signal;
 use taq_observability::{Telemetry, global_delivery_metrics};
 use taq_state::PgCursorStore;
@@ -39,6 +40,7 @@ async fn run() -> Result<()> {
     info!("Iniciando taq-ingestd...");
 
     let settings = config::Settings::from_env()?;
+    let kafka_security = KafkaSecurityConfig::from_env()?;
     let config = KafkaPipelineConfig {
         brokers: settings.kafka_broker.clone(),
         raw_topic: "events.raw".to_string(),
@@ -48,7 +50,8 @@ async fn run() -> Result<()> {
     };
 
     let cursor_store = std::sync::Arc::new(PgCursorStore::connect(&settings.database_url).await?);
-    let pipeline = KafkaPipeline::new(config)?.with_cursor_store(cursor_store.clone());
+    let pipeline = KafkaPipeline::new(config, &kafka_security)?
+        .with_cursor_store(cursor_store.clone());
     let (main_tx, main_rx) = mpsc::channel(settings.source_queue_capacity.saturating_mul(3));
     let retry_policy = RetryPolicy::new(settings.retry_initial_delay, settings.retry_max_delay);
 

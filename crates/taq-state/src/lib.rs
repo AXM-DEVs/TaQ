@@ -1,13 +1,73 @@
 use std::time::Duration;
+use std::{fs::File, io::BufReader, path::Path, sync::Arc};
 
 use anyhow::{Context, Result};
 use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use serde_json::Value;
 use taq_ingest::SourceCursorStore;
+use tokio_postgres::config::SslMode;
 use tokio_postgres::NoTls;
+use tokio_postgres_rustls::MakeRustlsConnect;
 
 pub type PgPool = Pool;
 pub use deadpool_postgres::Client as PgClient;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PgTlsMode {
+    Disable,
+    VerifyFull,
+}
+
+impl PgTlsMode {
+    pub fn from_value(value: Option<&str>) -> Result<Self> {
+        match value {
+            Some("disable") => Ok(Self::Disable),
+            Some("verify-full") => Ok(Self::VerifyFull),
+            None => anyhow::bail!("TAQ_PG_TLS_MODE es obligatoria"),
+            Some("") => anyhow::bail!("TAQ_PG_TLS_MODE no puede estar vacío"),
+            Some(_) => anyhow::bail!("TAQ_PG_TLS_MODE debe ser disable o verify-full"),
+        }
+    }
+
+    pub fn from_env() -> Result<Self> {
+        let value = std::env::var_os("TAQ_PG_TLS_MODE")
+            .ok_or_else(|| anyhow::anyhow!("TAQ_PG_TLS_MODE es obligatoria"))?;
+        let value = value
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("TAQ_PG_TLS_MODE debe ser texto Unicode"))?;
+        Self::from_value(Some(value))
+    }
+}
+
+pub fn pg_tls_config(ca_file: Option<&Path>) -> Result<rustls::ClientConfig> {
+    let mut roots = rustls::RootCertStore::empty();
+    roots.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
+
+    if let Some(path) = ca_file {
+        let file = File::open(path)
+            .with_context(|| format!("no se pudo abrir TAQ_PG_TLS_CA_FILE ({})", path.display()))?;
+        let mut reader = BufReader::new(file);
+        let certificates = rustls_pemfile::certs(&mut reader)
+            .collect::<std::result::Result<Vec<_>, _>>()
+            .with_context(|| format!("PEM inválido en TAQ_PG_TLS_CA_FILE ({})", path.display()))?;
+        anyhow::ensure!(
+            !certificates.is_empty(),
+            "TAQ_PG_TLS_CA_FILE no contiene certificados PEM ({})",
+            path.display()
+        );
+        for certificate in certificates {
+            roots.add(certificate).with_context(|| {
+                format!("certificado inválido en TAQ_PG_TLS_CA_FILE ({})", path.display())
+            })?;
+        }
+    }
+
+    let provider = Arc::new(rustls::crypto::ring::default_provider());
+    Ok(rustls::ClientConfig::builder_with_provider(provider)
+        .with_safe_default_protocol_versions()?
+        .with_root_certificates(roots)
+        .with_no_client_auth())
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct PgPoolConfig {
@@ -42,15 +102,33 @@ impl PgPoolConfig {
     }
 }
 
-pub fn create_pg_pool(database_url: &str, config: PgPoolConfig) -> Result<PgPool> {
-    let pg_config = database_url.parse()?;
-    let manager = Manager::from_config(
-        pg_config,
-        NoTls,
-        ManagerConfig {
-            recycling_method: RecyclingMethod::Fast,
-        },
-    );
+pub fn create_pg_pool(
+    database_url: &str,
+    config: PgPoolConfig,
+    tls_mode: PgTlsMode,
+    ca_file: Option<&Path>,
+) -> Result<PgPool> {
+    let mut pg_config = database_url.parse()?;
+    let manager = match tls_mode {
+        PgTlsMode::Disable => {
+            pg_config.ssl_mode(SslMode::Disable);
+            Manager::from_config(
+                pg_config,
+                NoTls,
+                ManagerConfig { recycling_method: RecyclingMethod::Fast },
+            )
+        }
+        PgTlsMode::VerifyFull => {
+            // tokio-postgres has no VerifyFull mode. Require enforces TLS while
+            // MakeRustlsConnect validates both the certificate chain and hostname.
+            pg_config.ssl_mode(SslMode::Require);
+            Manager::from_config(
+                pg_config,
+                MakeRustlsConnect::new(pg_tls_config(ca_file)?),
+                ManagerConfig { recycling_method: RecyclingMethod::Fast },
+            )
+        }
+    };
     Ok(Pool::builder(manager)
         .max_size(config.max_size())
         .wait_timeout(Some(config.acquire_timeout()))
@@ -61,8 +139,8 @@ pub fn create_pg_pool(database_url: &str, config: PgPoolConfig) -> Result<PgPool
 
 #[cfg(test)]
 mod pool_config_tests {
-    use super::PgPoolConfig;
-    use std::time::Duration;
+    use super::{PgPoolConfig, PgTlsMode};
+    use std::{path::Path, time::Duration};
 
     #[test]
     fn defaults_to_bounded_pool_and_acquire_timeout() {
@@ -87,6 +165,35 @@ mod pool_config_tests {
             assert!(PgPoolConfig::from_values(None, Some(value)).is_err());
         }
     }
+
+    #[test]
+    fn parses_tls_modes_strictly() {
+        assert_eq!(PgTlsMode::from_value(Some("disable")).unwrap(), PgTlsMode::Disable);
+        assert_eq!(PgTlsMode::from_value(Some("verify-full")).unwrap(), PgTlsMode::VerifyFull);
+        assert!(PgTlsMode::from_value(None).is_err());
+        for value in ["require", "prefer", "unknown", ""] {
+            assert!(PgTlsMode::from_value(Some(value)).is_err());
+        }
+    }
+
+    #[test]
+    fn loads_webpki_roots_and_rejects_empty_or_invalid_pem() {
+        assert!(super::pg_tls_config(None).is_ok());
+        // Public ISRG Root X1, selected from the local certificate store by
+        // SHA1 thumbprint CABD2A79A1076A31F21D253635CB039D4329A5E8.
+        let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/isrg-root-x1.pem");
+        assert!(super::pg_tls_config(Some(&fixture)).is_ok());
+        let dir = std::env::temp_dir().join(format!("taq-pg-ca-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let empty = dir.join("empty.pem");
+        std::fs::write(&empty, []).unwrap();
+        assert!(super::pg_tls_config(Some(&empty)).is_err());
+        let invalid = dir.join("invalid.pem");
+        std::fs::write(&invalid, b"-----BEGIN CERTIFICATE-----\nnot-a-cert\n-----END CERTIFICATE-----\n").unwrap();
+        assert!(super::pg_tls_config(Some(&invalid)).is_err());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
 }
 
 #[derive(Clone)]
@@ -102,7 +209,11 @@ impl PgCursorStore {
                 .ok()
                 .as_deref(),
         )?;
-        let pool = create_pg_pool(database_url, config)
+        let tls_mode = PgTlsMode::from_env()?;
+        let ca_file = std::env::var_os("TAQ_PG_TLS_CA_FILE")
+            .filter(|value| !value.is_empty())
+            .map(std::path::PathBuf::from);
+        let pool = create_pg_pool(database_url, config, tls_mode, ca_file.as_deref())
             .context("no se pudo crear el pool PostgreSQL para checkpoints de fuentes")?;
         let client = pool
             .get()

@@ -10,6 +10,7 @@ use rdkafka::{
 };
 use serde::{Deserialize, Serialize};
 use taq_core::Event;
+use taq_kafka::KafkaSecurityConfig;
 use taq_observability::{IngestOutcome, global_delivery_metrics};
 use tokio::sync::mpsc;
 use tracing::{error, info};
@@ -84,8 +85,10 @@ pub struct KafkaPipeline {
 }
 
 impl KafkaPipeline {
-    pub fn new(config: KafkaPipelineConfig) -> Result<Self> {
-        let producer = ClientConfig::new()
+    pub fn new(config: KafkaPipelineConfig, security: &KafkaSecurityConfig) -> Result<Self> {
+        let mut producer_config = ClientConfig::new();
+        security.apply(&mut producer_config)?;
+        let producer = producer_config
             .set("bootstrap.servers", &config.brokers)
             .set("message.timeout.ms", "10000")
             .create()

@@ -8,6 +8,7 @@ use rdkafka::{
     producer::{FutureProducer, FutureRecord, Producer},
 };
 use taq_dlq_replay::{ReplayOutcome, replay_dead_letter};
+use taq_kafka::KafkaSecurityConfig;
 use taq_observability::{
     ReplayMetricOutcome, Telemetry, global_delivery_metrics, wait_for_shutdown_signal,
 };
@@ -40,13 +41,16 @@ async fn run() -> Result<()> {
         env::var("TAQ_DLQ_CONSUMER_GROUP").unwrap_or_else(|_| "taq-dlq-replay-v1".into());
     let limit = positive_env("TAQ_DLQ_REPLAY_LIMIT", 1000)?;
     let idle_secs = positive_env("TAQ_DLQ_REPLAY_IDLE_SECS", 30)?;
+    let kafka_security = KafkaSecurityConfig::from_env()?;
     let dry_run = match env::var("TAQ_DLQ_REPLAY_DRY_RUN") {
         Ok(value) => parse_dry_run_value(Some(&value))?,
         Err(env::VarError::NotPresent) => parse_dry_run_value(None)?,
         Err(error) => return Err(error).context("no se pudo leer TAQ_DLQ_REPLAY_DRY_RUN"),
     };
 
-    let consumer: StreamConsumer = ClientConfig::new()
+    let mut consumer_config = ClientConfig::new();
+    kafka_security.apply(&mut consumer_config)?;
+    let consumer: StreamConsumer = consumer_config
         .set("bootstrap.servers", &brokers)
         .set("group.id", &group_id)
         .set("enable.auto.commit", "false")
@@ -58,7 +62,9 @@ async fn run() -> Result<()> {
         .subscribe(&["events.dead_letter"])
         .context("no se pudo suscribir a events.dead_letter")?;
 
-    let producer: FutureProducer = ClientConfig::new()
+    let mut producer_config = ClientConfig::new();
+    kafka_security.apply(&mut producer_config)?;
+    let producer: FutureProducer = producer_config
         .set("bootstrap.servers", &brokers)
         .set("message.timeout.ms", "10000")
         .create()

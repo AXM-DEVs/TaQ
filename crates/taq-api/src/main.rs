@@ -26,9 +26,10 @@ use rdkafka::{
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use taq_core::Event;
+use taq_kafka::KafkaSecurityConfig;
 use taq_observability::Telemetry;
 use taq_observability::global_delivery_metrics;
-use taq_state::{PgClient, PgPool, PgPoolConfig, create_pg_pool};
+use taq_state::{PgClient, PgPool, PgPoolConfig, PgTlsMode, create_pg_pool};
 use tracing::{error, info};
 
 #[derive(Clone)]
@@ -70,13 +71,28 @@ fn internal_error(context: &str, error: impl std::fmt::Display) -> ApiError {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
+    for variable in [
+        "TAQ_ACTION_DISPATCH_ENABLED",
+        "TAQ_API_PUBLICLY_ROUTABLE",
+        "TAQ_API_TLS_TERMINATED_UPSTREAM",
+    ] {
+        if env::var(variable).is_ok_and(|value| value != "true" && value != "false") {
+            anyhow::bail!("{variable} solo acepta true o false");
+        }
+    }
+    let kafka_security = KafkaSecurityConfig::from_env()?;
+    let tls_mode = PgTlsMode::from_env()?;
+    validate_public_runtime_config(tls_mode, &kafka_security)?;
     let database_url = env::var("TAQ_DATABASE_URL")
         .unwrap_or_else(|_| "postgres://taq:taq_dev@127.0.0.1:5432/taq".to_owned());
     let pool_config = PgPoolConfig::from_values(
         env::var("TAQ_PG_POOL_MAX_SIZE").ok().as_deref(),
         env::var("TAQ_PG_POOL_ACQUIRE_TIMEOUT_SECS").ok().as_deref(),
     )?;
-    let pool = create_pg_pool(&database_url, pool_config)?;
+    let ca_file = env::var_os("TAQ_PG_TLS_CA_FILE")
+        .filter(|value| !value.is_empty())
+        .map(std::path::PathBuf::from);
+    let pool = create_pg_pool(&database_url, pool_config, tls_mode, ca_file.as_deref())?;
     let db = pool.get().await?;
     db.query("SELECT 1 FROM public.taq_api_keys LIMIT 0", &[])
         .await?;
@@ -100,15 +116,6 @@ async fn main() -> anyhow::Result<()> {
         return Ok(());
     }
     drop(db);
-    for variable in [
-        "TAQ_ACTION_DISPATCH_ENABLED",
-        "TAQ_API_PUBLICLY_ROUTABLE",
-        "TAQ_API_TLS_TERMINATED_UPSTREAM",
-    ] {
-        if env::var(variable).is_ok_and(|value| value != "true" && value != "false") {
-            anyhow::bail!("{variable} solo acepta true o false");
-        }
-    }
     let telemetry = Telemetry::init("taq-api")?;
     let context_ready = Arc::new(AtomicBool::new(false));
     let state = AppState {
@@ -148,22 +155,21 @@ async fn main() -> anyhow::Result<()> {
     let bind: SocketAddr = env::var("TAQ_API_BIND")
         .unwrap_or_else(|_| "127.0.0.1:8080".to_owned())
         .parse()?;
-    if env::var("TAQ_API_PUBLICLY_ROUTABLE").as_deref() == Ok("true")
-        && env::var("TAQ_API_TLS_TERMINATED_UPSTREAM").as_deref() != Ok("true")
-    {
-        anyhow::bail!(
-            "API públicamente enrutable requiere TLS terminado en proxy de confianza y TAQ_API_TLS_TERMINATED_UPSTREAM=true"
-        );
-    }
     let listener = tokio::net::TcpListener::bind(bind).await?;
     info!(%bind, "taq-api escuchando");
     let broker = env::var("TAQ_KAFKA_BROKER").unwrap_or_else(|_| "localhost:19092".to_owned());
     let worker_ready = context_ready.clone();
     let context_broker = broker.clone();
+    let context_security = kafka_security.clone();
     let context_task = tokio::spawn(async move {
         retry_task("consumer de contexto", || {
             worker_ready.store(false, Ordering::SeqCst);
-            run_context_consumer(context_db.clone(), &context_broker, worker_ready.clone())
+            run_context_consumer(
+                context_db.clone(),
+                &context_broker,
+                worker_ready.clone(),
+                &context_security,
+            )
         })
         .await
     });
@@ -174,8 +180,9 @@ async fn main() -> anyhow::Result<()> {
         .await
     });
     let dispatch_task = tokio::spawn(async move {
+        let dispatch_security = kafka_security;
         retry_task("dispatcher de acciones", || {
-            dispatch_actions_loop(dispatch_db.clone(), &broker)
+            dispatch_actions_loop(dispatch_db.clone(), &broker, &dispatch_security)
         })
         .await
     });
@@ -217,6 +224,95 @@ where
 }
 
 type ProvisioningArgs = (String, String, Vec<String>, bool, Option<i64>);
+
+fn validate_public_runtime_config(
+    pg_tls_mode: PgTlsMode,
+    kafka_security: &KafkaSecurityConfig,
+) -> anyhow::Result<()> {
+    if env::var("TAQ_API_PUBLICLY_ROUTABLE").as_deref() != Ok("true") {
+        return Ok(());
+    }
+
+    let database_url = env::var("TAQ_DATABASE_URL")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| anyhow::anyhow!("API pública requiere TAQ_DATABASE_URL explícita"))?;
+    let normalized_database_url = database_url.to_ascii_lowercase();
+    if normalized_database_url == "postgres://taq:taq_dev@127.0.0.1:5432/taq"
+        || normalized_database_url.contains(":taq_dev@")
+    {
+        anyhow::bail!("API pública no puede usar credenciales PostgreSQL de desarrollo");
+    }
+
+    let brokers = env::var("TAQ_KAFKA_BROKER")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| anyhow::anyhow!("API pública requiere TAQ_KAFKA_BROKER explícito"))?;
+    if brokers.split(',').any(is_loopback_broker) {
+        anyhow::bail!("API pública no puede usar el broker Kafka de desarrollo local");
+    }
+
+    let bind = env::var("TAQ_API_BIND")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| anyhow::anyhow!("API pública requiere TAQ_API_BIND explícito"))?;
+    let bind: SocketAddr = bind
+        .parse()
+        .map_err(|_| anyhow::anyhow!("TAQ_API_BIND debe ser una dirección socket válida"))?;
+    if bind.ip().is_loopback() {
+        anyhow::bail!("API pública no puede enlazarse a una dirección loopback");
+    }
+    if bind.port() == 0 {
+        anyhow::bail!("API pública requiere un puerto TAQ_API_BIND explícito y no nulo");
+    }
+
+    if env::var("TAQ_API_TLS_TERMINATED_UPSTREAM").as_deref() != Ok("true") {
+        anyhow::bail!(
+            "API públicamente enrutable requiere TLS terminado en proxy de confianza y TAQ_API_TLS_TERMINATED_UPSTREAM=true"
+        );
+    }
+
+    anyhow::ensure!(
+        pg_tls_mode == PgTlsMode::VerifyFull,
+        "API pública requiere TAQ_PG_TLS_MODE=verify-full"
+    );
+    anyhow::ensure!(
+        kafka_security.uses_sasl_ssl(),
+        "API pública requiere TAQ_KAFKA_SECURITY_PROTOCOL=SASL_SSL"
+    );
+    anyhow::ensure!(
+        !kafka_security.uses_development_credentials(),
+        "API pública no puede usar credenciales SASL de ejemplo o desarrollo"
+    );
+    anyhow::bail!(
+        "API pública permanece bloqueada hasta completar la calificación F12 y los gates de salida F10/F11"
+    )
+}
+
+fn is_loopback_broker(address: &str) -> bool {
+    let address = address.trim();
+    let authority = address.rsplit_once('@').map_or(address, |(_, value)| value);
+    let host = if let Some(rest) = authority.strip_prefix('[') {
+        rest.split_once(']').map_or(rest, |(host, _)| host)
+    } else {
+        authority.split_once(':').map_or(authority, |(host, _)| host)
+    };
+    match url::Host::parse(host) {
+        Ok(url::Host::Ipv4(address)) => address.is_loopback(),
+        Ok(url::Host::Ipv6(address)) => {
+            address.is_loopback()
+                || address
+                    .to_ipv4_mapped()
+                    .is_some_and(|address| address.is_loopback())
+        }
+        Ok(url::Host::Domain(address)) => {
+            let address = address.trim_end_matches('.');
+            address.eq_ignore_ascii_case("localhost")
+                || address.to_ascii_lowercase().ends_with(".localhost")
+        }
+        Err(_) => true,
+    }
+}
 
 fn provisioning_args() -> anyhow::Result<Option<ProvisioningArgs>> {
     let args = env::args().skip(1).collect::<Vec<_>>();
@@ -287,15 +383,20 @@ async fn run_context_consumer(
     db: PgPool,
     brokers: &str,
     ready: Arc<AtomicBool>,
+    security: &KafkaSecurityConfig,
 ) -> anyhow::Result<()> {
-    let consumer: StreamConsumer = ClientConfig::new()
+    let mut consumer_config = ClientConfig::new();
+    security.apply(&mut consumer_config)?;
+    let consumer: StreamConsumer = consumer_config
         .set("bootstrap.servers", brokers)
         .set("group.id", "taq-context-v1")
         .set("enable.auto.commit", "false")
         .set("auto.offset.reset", "earliest")
         .create()?;
     consumer.subscribe(&["events.raw"])?;
-    let dead_letter: FutureProducer = ClientConfig::new()
+    let mut dead_letter_config = ClientConfig::new();
+    security.apply(&mut dead_letter_config)?;
+    let dead_letter: FutureProducer = dead_letter_config
         .set("bootstrap.servers", brokers)
         .set("message.timeout.ms", "10000")
         .create()?;
@@ -405,12 +506,18 @@ async fn expire_actions_loop(db: PgPool) -> anyhow::Result<()> {
     }
 }
 
-async fn dispatch_actions_loop(db: PgPool, brokers: &str) -> anyhow::Result<()> {
+async fn dispatch_actions_loop(
+    db: PgPool,
+    brokers: &str,
+    security: &KafkaSecurityConfig,
+) -> anyhow::Result<()> {
     if env::var("TAQ_ACTION_DISPATCH_ENABLED").as_deref() != Ok("true") {
         info!("dispatcher de acciones deshabilitado por kill switch");
         std::future::pending::<()>().await;
     }
-    let producer: FutureProducer = ClientConfig::new()
+    let mut producer_config = ClientConfig::new();
+    security.apply(&mut producer_config)?;
+    let producer: FutureProducer = producer_config
         .set("bootstrap.servers", brokers)
         .set("message.timeout.ms", "10000")
         .create()?;
@@ -2162,6 +2269,24 @@ async fn revoke_api_key(
 mod rule_dataset_tests {
     use super::*;
     use taq_core::TimestampQuality;
+
+    #[test]
+    fn public_broker_guard_rejects_loopback_hosts_and_ip_ranges() {
+        for broker in [
+            "localhost:9092",
+            "LOCALHOST:9092",
+            "127.0.0.2:9092",
+            "[::1]:9092",
+            "localhost.:9092",
+            "events.localhost:9092",
+            "127.1:9092",
+            "2130706433:9092",
+            "[::ffff:127.0.0.1]:9092",
+        ] {
+            assert!(is_loopback_broker(broker), "{broker}");
+        }
+        assert!(!is_loopback_broker("kafka.example.net:9093"));
+    }
 
     fn sample(
         id: &str,

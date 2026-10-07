@@ -11,6 +11,20 @@ Este runbook define las tareas antes del piloto; no certifica un despliegue prod
 5. Confirmar términos/licencias y la lista de fuentes autorizadas; BBC sigue siendo solo valor de ejemplo.
 6. Verificar endpoint de métricas, disponibilidad de dashboards, alertas del runbook y contacto responsable de incidentes.
 
+## Transporte cifrado del API
+
+Para `TAQ_API_PUBLICLY_ROUTABLE=true`, configurar `TAQ_PG_TLS_MODE=verify-full` y `TAQ_KAFKA_SECURITY_PROTOCOL=SASL_SSL`, con CA confiable, mecanismo SASL permitido y credenciales completas. PostgreSQL y librdkafka validan el hostname del certificado. Nunca usar `disable` o `PLAINTEXT` en un endpoint expuesto. Los Docker Compose de TaQ solo declaran el perfil local; montan `./secrets` del host como `/run/taq-secrets` de solo lectura para archivos CA/certificado/llave. Compose admite `TAQ_KAFKA_SASL_PASSWORD_FILE=/run/taq-secrets/kafka-sasl-password` para que la contraseña se lea del archivo y no pase como variable de entorno; TaQ elimina solo CR/LF finales y jamás la imprime. Para producción, inyectar secretos desde el gestor del operador con permisos mínimos, rotación documentada y sin agregarlos al repositorio. Si un orchestrator obliga a usar env vars, limitar el acceso al runtime y al host que puede inspeccionarlas.
+
+### Rotación de CA, certificados y credenciales
+
+1. Emitir la CA/certificado de reemplazo con SAN DNS que coincidan con el hostname usado por la conexión; comprobar fechas, EKU de servidor y cadena con la infraestructura de certificados del operador.
+2. Publicar un bundle temporal con CA antigua y nueva. Actualizar el archivo montado y reiniciar gradualmente API e ingesta para que ambos procesos lo carguen; no registrar el contenido del certificado privado ni secretos durante la operación.
+3. Cambiar el certificado de PostgreSQL o Kafka y confirmar health/readiness, errores TLS y consumo/publicación desde el entorno controlado. Si falla, restaurar el certificado anterior manteniendo el bundle dual.
+4. Tras completar el cambio en todos los endpoints y comprobar que ya no se presenta la CA antigua, retirar esa CA del bundle y reiniciar los procesos para retirar confianza residual.
+5. Rotar PostgreSQL con una segunda cuenta de servicio de mínimo privilegio y Kafka con un principal SCRAM nuevo: inyectar las credenciales nuevas desde el gestor, reiniciar consumidores/productores, confirmar operación y después revocar la credencial anterior. Nunca pasar secretos en argumentos de proceso, comandos guardados o logs.
+
+La secuencia requiere coordinación del operador de PostgreSQL/Kafka y una ventana de solapamiento; practicarla antes de declarar disponibilidad productiva.
+
 ## Arranque y salud
 
 - Orden: PostgreSQL/migraciones → Redpanda y topics → ClickHouse y migraciones → `taq-ingestd` → `taq-api`/consumer.

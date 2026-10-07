@@ -15,6 +15,7 @@ use rdkafka::{
 };
 use serde_json::json;
 use taq_core::{Event, TimestampQuality};
+use taq_kafka::KafkaSecurityConfig;
 use tokio::time::sleep;
 use tracing::{error, info};
 
@@ -140,8 +141,11 @@ async fn main() -> Result<()> {
         )
         .init();
     let config = parse_args()?;
+    let kafka_security = KafkaSecurityConfig::from_env()?;
     let broker = std::env::var("TAQ_KAFKA_BROKER").unwrap_or_else(|_| "localhost:19092".into());
-    let producer: FutureProducer = ClientConfig::new()
+    let mut producer_config = ClientConfig::new();
+    kafka_security.apply(&mut producer_config)?;
+    let producer: FutureProducer = producer_config
         .set("bootstrap.servers", broker)
         .set("message.timeout.ms", "10000")
         .set("queue.buffering.max.messages", "1000000")

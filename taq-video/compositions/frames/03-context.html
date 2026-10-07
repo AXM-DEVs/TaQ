@@ -1,0 +1,67 @@
+<template>
+  <div data-composition-id="03-context" id="scene-03" data-width="1920" data-height="1080" data-duration="10" style="position:relative; width:1920px; height:1080px; background:#102b33; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+      #scene-03 { color: #fbfcf8; font-family: 'Manrope', sans-serif; display: flex; }
+      .mark-inner, .label-inner, .signal-inner, .entities-inner, .svg-inner, .bottom-inner { opacity: 0; }
+      .taq-mark { position: absolute; top: 54px; right: 96px; width: 48px; height: 48px; border: 2px solid #e3b45d; border-radius: 4px; padding: 4px; box-sizing: border-box; }
+      .bottom-label { position: absolute; bottom: 54px; right: 96px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #fbfcf8; opacity: 0.6; }
+      .signal-wrapper { flex: 1; display: flex; align-items: center; padding-left: 120px; position: relative; z-index: 10; }
+      .signal-text { font-size: 96px; font-weight: 600; display: flex; align-items: center; gap: 24px; }
+      .signal-dot { width: 12px; height: 12px; border-radius: 50%; background-color: #e3b45d; }
+      .entities-wrapper { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 60px; padding-right: 200px; position: relative; z-index: 10; }
+      .entity-card { width: 300px; height: 80px; border: 2px solid #fbfcf8; border-radius: 6px; display: flex; align-items: center; padding: 0 24px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #fbfcf8; gap: 16px; background: #102b33; opacity: 0; }
+      .entity-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #e3b45d; }
+      .connector-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+      .connector-line { fill: none; stroke: #e3b45d; stroke-width: 3; stroke-dasharray: 1000; stroke-dashoffset: 1000; opacity: 0.6; }
+      .bottom-text { position: absolute; bottom: 140px; left: 216px; font-size: 40px; font-weight: 400; }
+    </style>
+    <div class="clip" data-start="0" data-duration="10">
+      <div class="mark-inner"><img src="assets/taq-mark.svg" class="taq-mark" alt="TaQ" /></div>
+      <div class="label-inner"><div class="bottom-label">Esquema conceptual</div></div>
+      <div class="svg-inner">
+        <svg class="connector-svg">
+          <path class="connector-line" d="M 440 540 C 600 540, 800 370, 1320 370" />
+          <path class="connector-line" d="M 440 540 C 700 540, 1000 540, 1320 540" />
+          <path class="connector-line" d="M 440 540 C 600 540, 800 710, 1320 710" />
+        </svg>
+      </div>
+      <div class="signal-inner">
+        <div class="signal-wrapper">
+          <div class="signal-text">SEÑAL <div class="signal-dot"></div></div>
+        </div>
+      </div>
+      <div class="entities-inner">
+        <div class="entities-wrapper">
+          <div class="entity-card"><div class="entity-dot"></div> MARCA</div>
+          <div class="entity-card"><div class="entity-dot"></div> DOMINIO</div>
+          <div class="entity-card"><div class="entity-dot"></div> ORGANIZACIÓN</div>
+        </div>
+      </div>
+      <div class="bottom-inner">
+        <div class="bottom-text">conectada con entidades vigiladas</div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="03-context"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["03-context"] = tl;
+        tl.to(root.querySelector('.mark-inner'), { opacity: 1, duration: 1.5 }, 0);
+        tl.to(root.querySelector('.label-inner'), { opacity: 1, duration: 1.5 }, 0);
+        tl.to(root.querySelector('.svg-inner'), { opacity: 1, duration: 0.1 }, 0);
+        tl.to(root.querySelector('.signal-inner'), { opacity: 1, duration: 0.1 }, 0);
+        tl.to(root.querySelector('.entities-inner'), { opacity: 1, duration: 0.1 }, 0);
+        tl.fromTo(root.querySelector('.signal-text'), { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 1.2, ease: "power3.out" }, 0.5);
+        tl.to(root.querySelector('.signal-dot'), { scale: 1.5, opacity: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut", duration: 1.5 }, 1.0);
+        tl.fromTo(root.querySelectorAll('.entity-card'), { x: 100, opacity: 0 }, { x: 0, opacity: 1, duration: 1, stagger: 0.4, ease: "power3.out" }, 2.0);
+        tl.to(root.querySelectorAll('.connector-line'), { strokeDashoffset: 0, duration: 1.5, stagger: 0.4, ease: "power2.inOut" }, 2.5);
+        tl.fromTo(root.querySelector('.bottom-inner'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }, 4.5);
+      })();
+    </script>
+  </div>
+</template>

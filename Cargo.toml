@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/taq-core", "crates/taq-loadgen", "crates/taq-ingest", "crates/taq-connector-wikimedia", "crates/taq-ingestd", "crates/taq-connector-bluesky", "crates/taq-connector-rss", "crates/taq-dlq-replay", "crates/taq-observability", "crates/taq-state", "crates/taq-api"]
+members = ["crates/taq-core", "crates/taq-loadgen", "crates/taq-ingest", "crates/taq-connector-wikimedia", "crates/taq-ingestd", "crates/taq-connector-bluesky", "crates/taq-connector-rss", "crates/taq-dlq-replay", "crates/taq-observability", "crates/taq-state", "crates/taq-api", "crates/taq-kafka"]
 resolver = "2"
 
 [workspace.package]
@@ -14,12 +14,16 @@ blake3 = "1.8"
 chrono = { version = "0.4", default-features = false, features = ["std"] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
 idna = "1.1"
-rdkafka = { version = "0.39.0", features = ["cmake-build"] }
+rdkafka = { version = "0.39.0", features = ["cmake-build", "ssl"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 tokio = { version = "1.47", features = ["macros", "rt-multi-thread", "sync", "time", "signal", "net"] }
 tokio-postgres = { version = "0.7", features = ["with-serde_json-1"] }
+tokio-postgres-rustls = "0.14"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pemfile = "2"
+webpki-roots = "1"
 deadpool-postgres = "0.14"
 url = "2.5"
 tracing = "0.1"

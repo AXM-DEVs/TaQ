@@ -1,0 +1,94 @@
+<template>
+  <div data-composition-id="07-closing" id="scene-07" data-width="1920" data-height="1080" data-duration="9" style="position:relative; width:1920px; height:1080px; background:#102b33; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+
+      .closing-comp {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        color: #ffffff; font-family: 'Manrope', sans-serif;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+      }
+
+      .lockup-inner { display: flex; align-items: center; justify-content: center; opacity: 0; }
+      .taq-mark { width: 96px; height: 96px; margin-right: 24px; }
+      .wordmark { font-size: 140px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; margin: 0; padding: 0; }
+
+      .tagline-inner { margin-top: 40px; font-size: 40px; font-weight: 400; color: rgba(251,252,248,0.7); opacity: 0; }
+
+      .signature-inner { margin-top: 32px; font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; color: #e3b45d; opacity: 0; }
+
+      .bottom-section-inner { position: absolute; bottom: 96px; display: flex; flex-direction: column; align-items: center; opacity: 0; width: 100%; }
+      .amber-line { width: 400px; height: 2px; background-color: #e3b45d; margin-bottom: 24px; }
+      .closing-phrase { font-size: 36px; font-weight: 400; letter-spacing: 0.05em; }
+    </style>
+
+    <div class="closing-comp">
+      <div id="clip-lockup" class="clip" data-start="0" data-duration="9">
+        <div class="lockup-inner">
+          <img src="assets/taq-mark.svg" class="taq-mark" />
+          <div class="wordmark">TaQ</div>
+        </div>
+      </div>
+
+      <div id="clip-tagline" class="clip" data-start="2" data-duration="7">
+        <div class="tagline-inner">
+          Gratuito por propósito · En desarrollo
+        </div>
+      </div>
+
+      <div id="clip-signature" class="clip" data-start="3.5" data-duration="5.5">
+        <div class="signature-inner">
+          AXM — creador independiente
+        </div>
+      </div>
+
+      <div id="clip-bottom" class="clip" data-start="5" data-duration="4" style="width: 100%; height: 100%;">
+        <div class="bottom-section-inner">
+          <div class="amber-line"></div>
+          <div class="closing-phrase">Una señal aislada es solo el principio.</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="07-closing"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["07-closing"] = tl;
+
+        const lockup = root.querySelector(".lockup-inner");
+        const tagline = root.querySelector(".tagline-inner");
+        const signature = root.querySelector(".signature-inner");
+        const bottom = root.querySelector(".bottom-section-inner");
+
+        tl.fromTo(lockup,
+          { autoAlpha: 0, scale: 0.9, filter: "blur(4px)" },
+          { autoAlpha: 1, scale: 1.0, filter: "blur(0px)", duration: 2, ease: "power3.out" },
+          0
+        );
+
+        tl.fromTo(tagline,
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 1.5, ease: "power2.out" },
+          2
+        );
+
+        tl.fromTo(signature,
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 1.5, ease: "power2.out" },
+          3.5
+        );
+
+        tl.fromTo(bottom,
+          { autoAlpha: 0, y: 20 },
+          { autoAlpha: 1, y: 0, duration: 1.5, ease: "power2.out" },
+          5
+        );
+      })();
+    </script>
+  </div>
+</template>

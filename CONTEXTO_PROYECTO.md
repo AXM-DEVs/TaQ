@@ -2,13 +2,34 @@
 
 Guía para entender la intención, arquitectura y estado actual de TaQ antes de modificarlo. Complementa el [README](README.md): aquí se explica cómo se conectan las piezas y qué límites tiene la implementación actual.
 
-**Última revisión del contenido:** 2026-10-04. El árbol contiene cambios F1–F9 pendientes de validación final. El checkout está en `master`, con cambios locales preexistentes y nuevos; no resetear ni atribuirlos a una rama/commit.
+**Última revisión del contenido:** 2026-10-06. F1–F12 tienen implementación parcial o evidencia local desigual; el producto todavía no ha pasado la calificación final para uso público. Distingue siempre código existente de comportamiento validado y de criterios de lanzamiento.
 
 ## Qué es TaQ
 
 TaQ es un motor modular de inteligencia contextual. El flujo de producto previsto es **ingerir → contextualizar → inferir → coordinar → aprender**. El primer vertical es OSINT defensivo sobre una lista vigilada de marcas, dominios y organizaciones, pero los contratos centrales buscan seguir independientes de ese vertical.
 
 F0–F2 cubren el prototipo de ingesta y recuperación. La continuación actual implementa F3–F9: cursores de fuentes, contexto multi-tenant, reglas explicables, hallazgos, aprobación/outbox, feedback gobernado y API/CLI. Esta implementación aún no ha pasado las pruebas finales ni E2E; no marcar fases completas por la existencia de código o SQL.
+
+## Relación con el TaQ anterior
+
+El repositorio [AXM-DEVs/taq-engine](https://github.com/AXM-DEVs/taq-engine) es un prototipo anterior e independiente: Python/FastAPI, investigaciones OSINT, playbooks, conectores, puntuación y consultas. Se revisó el 2026-10-06 para rescatar requisitos e ideas. No es la implementación base ni una fuente de comportamiento verificado para el motor Rust actual.
+
+### Qué conviene conservar como referencia
+
+- **Catálogo de fuentes OSINT:** DNS, WHOIS, GeoIP, VirusTotal, AbuseIPDB y Shodan pueden orientar la evaluación de conectores futuros. Antes de implementar cada uno hay que revisar disponibilidad, términos de uso, límites, atribución, privacidad, secretos y si su señal sirve al caso defensivo. Empezar con fuentes públicas y acotadas; no asumir que todo conector anterior es gratuito o apto para producción.
+- **Flujos declarativos de análisis:** la estructura conceptual de playbook (pasos, transformaciones, condiciones y notificaciones) puede servir para diseñar una capa de orquestación más adelante. El motor actual ya tiene reglas, hallazgos y acciones con aprobación/outbox; todavía no tiene executor externo de playbooks.
+- **Explicabilidad de señales:** antigüedad, confiabilidad de la fuente, corroboración/correlación y reputación son dimensiones candidatas para enriquecer evidencia y priorización. Son hipótesis de diseño, no pesos calibrados ni un modelo validado. Priorizar reglas versionadas, evidencia trazable y evaluación contra gold set antes de combinar factores en una puntuación.
+- **Casos de uso e interacción:** investigaciones, entidades y exploración de relaciones pueden ayudar a identificar necesidades de API o interfaz. Adaptar los casos al flujo actual de listas vigiladas → contexto → reglas → hallazgos → feedback, sin replicar el producto anterior automáticamente.
+
+### Qué no portar directamente
+
+No copiar directamente el motor de investigaciones, autenticación/API keys, persistencia, executor de playbooks, webhooks, límites por tier ni traducción de lenguaje natural a SQL/Cypher. En la revisión estática del prototipo anterior se encontraron desajustes de argumentos en la creación de investigaciones, estado de investigaciones en memoria, paginación aplicada dos veces, manejo de fallos de pasos que podía dejar continuar una ejecución y notificación webhook sin validación suficiente de destinos ni estados HTTP. Su puntuación usa pesos heurísticos sin evidencia de calibración. Estos componentes requieren rediseño y revisión de seguridad si alguna necesidad futura justifica reemplazarlos por versiones acordes a los contratos Rust.
+
+No se ejecutaron sus dependencias, pruebas ni servicios; las conclusiones anteriores son una revisión de código y documentación, no certificación funcional. Su README presenta planes y afirmaciones de producto que no deben trasladarse al contexto actual como capacidades logradas. Cualquier reutilización futura debe mantener atribución/licencia y pasar por una revisión legal y de dependencias; el repositorio anterior declara MIT, pero esto no sustituye la revisión de cada archivo y dependencia.
+
+### Decisión de producto
+
+TaQ actual sigue siendo un motor gratuito de inteligencia contextual, con un primer vertical de OSINT defensivo. No se adopta el modelo premium/SaaS que describe el prototipo anterior. No se importará código del repo anterior por ahora. Las ideas rescatadas entran al backlog como candidatos, subordinados a cerrar la confiabilidad, seguridad y validación del flujo central existente.
 
 ## Arquitectura y recorrido del evento
 
@@ -181,5 +202,15 @@ Un cambio incompatible al JSON debe actualizar `schema_version`, lectores/proyec
 - Smoke de integración aditivo con el stack actual: 	aq-loadgen envió 20 eventos (0 errores); ClickHouse observó 20 filas y 15 IDs únicos. 	aq.events local sigue en MergeTree, no ReplacingMergeTree; no se modificó ni migró ese volumen.
 - El volumen PostgreSQL normal está healthy pero carece de 	aq_api_keys: sus migraciones 0002–0004 no corrieron al crearse el volumen antiguo. Auto-review rechazó aplicarlas porque 0003 puede invalidar evaluaciones históricas existentes. No se alteró el volumen. En una instancia PostgreSQL desechable con tmpfs, migraciones 0001–0004 corrieron correctamente; el smoke HTTP de 	aq-api no devolvió respuesta aun cuando el puerto aceptó TCP y el worker de expiración registró timeout al crear conexión. Investigar esta interacción de arranque/worker/pool antes de afirmar API funcional.
 - Se verificó Compose config --quiet, los siete servicios base están activos; base healthchecks principales pasan. La construcción de la imagen Rust en Docker sigue pendiente por el problema previo de bibliotecas truncadas en el layer base. No se ejecutó prune/reset.
+- En la evidencia original F11, el guard público fallaba porque PostgreSQL aún usaba `NoTls` y los clientes Kafka no tenían TLS/SASL. La continuación de transporte más reciente está abajo: esos clientes ya comparten configuración cifrada, pero la exposición sigue fail-closed hasta F12 y los gates de privacidad/operación. La afirmación TLS upstream nunca prueba la topología real ni reemplaza la revisión del despliegue.
+- En la continuación del 2026-10-06, `docker compose --profile app ps -a` muestra los servicios detenidos; Redpanda y ClickHouse finalizaron con código 137 y no hay contenedor `taq-api`. No existe una reproducción actual del timeout HTTP. La llamada síncrona `fetch_metadata` del consumidor es una hipótesis de bloqueo del runtime, no causa confirmada; medir con API y dependencias activas antes de cambiarla.
+
+### Continuación de F10 — transporte seguro (2026-10-06)
+
+- Tarea 1 implementada, todavía sin verificación de build ni pruebas: `taq-state` configura PostgreSQL con `TAQ_PG_TLS_MODE=disable` solo cuando se declara explícitamente para desarrollo, o `verify-full` con Rustls, hostname verificado, WebPKI y CA PEM opcional. API y `PgCursorStore` consumen el mismo modo. Se añadieron pruebas unitarias y fixture de CA; se reservan para F12.
+- Tarea 2 implementada, sin build ni pruebas: nuevo crate `taq-kafka` valida `PLAINTEXT`, `SSL` y `SASL_SSL`, mecanismos SASL permitidos, credenciales, CA y pareja mTLS; configura verificación de hostname y redacta identidad/contraseña en `Debug`. La contraseña admite un archivo secreto montado para evitar exponerla como variable de entorno. `rdkafka/ssl` y OpenSSL se añadieron a dependencias/imágenes; `Cargo.lock` se actualizó con `cargo fetch`.
+- Tarea 3 integró la política en los siete productores/consumidores del API, ingesta, replay y loadgen; cada configuración se aplica antes de crear el cliente. Se usó revisión estática y `git diff --check`; no hubo build ni pruebas.
+- Tarea 4 parcialmente implementada: Compose declara los perfiles locales, pasa opciones TLS/SASL, monta `./secrets` como solo lectura en `/run/taq-secrets` e ignora el directorio en Git. El guard público valida PostgreSQL `verify-full`, Kafka `SASL_SSL`, credenciales no-placeholder y broker/bind antes de DB/listener, y permanece bloqueado hasta completar F10/F11/F12. Sigue pendiente verificar el despliegue real, provisionar secretos/CA, rotación y cobertura de topic-init/health checks seguros. No marcar F10/F12 como aprobadas ni exponer el servicio públicamente.
+- Se intentó `graphify update .` después de estos cambios; falla con `uv trampoline failed to canonicalize script path`. No se editaron los artefactos `graphify-out/` para simular una actualización. No se ejecutaron build, tests, Clippy, Docker ni pruebas E2E.
 
 

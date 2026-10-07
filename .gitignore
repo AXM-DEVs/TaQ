@@ -1,5 +1,6 @@
 /target/
 .env
+/secrets/
 *.log
 desktop.ini
 /graphify-out/cache/

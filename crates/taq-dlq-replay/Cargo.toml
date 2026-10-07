@@ -15,3 +15,4 @@ tracing-subscriber.workspace = true
 taq-core = { path = "../taq-core" }
 taq-ingest = { path = "../taq-ingest" }
 taq-observability = { path = "../taq-observability" }
+taq-kafka = { path = "../taq-kafka" }

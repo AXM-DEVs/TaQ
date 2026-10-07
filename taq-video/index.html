@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #102b33;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="68"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- Escena 1: Gancho (0-6s) -->
+      <div
+        id="el-01-hook"
+        class="scene"
+        data-composition-id="01-hook"
+        data-composition-src="compositions/frames/01-hook.html"
+        data-start="0"
+        data-duration="6"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 2: Fuentes (6-15s) -->
+      <div
+        id="el-02-sources"
+        class="scene"
+        data-composition-id="02-sources"
+        data-composition-src="compositions/frames/02-sources.html"
+        data-start="6"
+        data-duration="9"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 3: Contexto (15-25s) -->
+      <div
+        id="el-03-context"
+        class="scene"
+        data-composition-id="03-context"
+        data-composition-src="compositions/frames/03-context.html"
+        data-start="15"
+        data-duration="10"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 4: Flujo cinco pasos (25-40s) -->
+      <div
+        id="el-04-pipeline"
+        class="scene"
+        data-composition-id="04-pipeline"
+        data-composition-src="compositions/frames/04-pipeline.html"
+        data-start="25"
+        data-duration="15"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 5: Hallazgo revisable (40-50s) -->
+      <div
+        id="el-05-finding"
+        class="scene"
+        data-composition-id="05-finding"
+        data-composition-src="compositions/frames/05-finding.html"
+        data-start="40"
+        data-duration="10"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 6: Estado honesto (50-59s) -->
+      <div
+        id="el-06-status"
+        class="scene"
+        data-composition-id="06-status"
+        data-composition-src="compositions/frames/06-status.html"
+        data-start="50"
+        data-duration="9"
+        data-track-index="1"
+      ></div>
+
+      <!-- Escena 7: Cierre (59-68s) -->
+      <div
+        id="el-07-closing"
+        class="scene"
+        data-composition-id="07-closing"
+        data-composition-src="compositions/frames/07-closing.html"
+        data-start="59"
+        data-duration="9"
+        data-track-index="1"
+      ></div>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<template>
+  <div data-composition-id="06-status" id="scene-06" data-width="1920" data-height="1080" data-duration="9" style="position:relative; width:1920px; height:1080px; background:#fbfcf8; overflow:hidden;">
+    <style>
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Regular.woff2') format('woff2'); font-weight: 400; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-Medium.woff2') format('woff2'); font-weight: 500; }
+      @font-face { font-family: 'Manrope'; src: url('assets/fonts/Manrope-SemiBold.woff2') format('woff2'); font-weight: 600; }
+      @font-face { font-family: 'JetBrains Mono'; src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2'); font-weight: 500; }
+
+      .status-comp {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        color: #102b33; font-family: 'Manrope', sans-serif;
+        padding: 54px 96px; box-sizing: border-box;
+      }
+      .label-top-left { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; position: absolute; top: 54px; left: 96px; }
+      .mark-top-right { position: absolute; top: 54px; right: 96px; width: 48px; height: 48px; }
+
+      .columns-container { position: absolute; top: 240px; left: 96px; right: 96px; display: flex; justify-content: space-between; height: 500px; }
+
+      .col { width: 48%; }
+      .col-left-inner, .col-right-inner, .divider-inner, .footer-inner { opacity: 0; }
+      .col-left-inner .col-title { color: #176f68; font-size: 48px; font-weight: 600; margin-bottom: 40px; }
+      .col-right-inner .col-title { color: #e3b45d; font-size: 48px; font-weight: 600; margin-bottom: 40px; }
+
+      .ul-list { list-style: none; padding: 0; margin: 0; }
+      .ul-list li { font-size: 32px; font-weight: 400; margin-bottom: 24px; position: relative; padding-left: 32px; }
+
+      .col-left-inner .ul-list li::before { content: '•'; color: #176f68; position: absolute; left: 0; font-size: 32px; }
+      .col-right-inner .ul-list li::before { content: '•'; color: #e3b45d; position: absolute; left: 0; font-size: 32px; }
+
+      .divider-inner { width: 2px; background-color: #176f68; height: 100%; margin: 0 2%; opacity: 0; }
+
+      .footer-inner { position: absolute; bottom: 180px; width: 100%; left: 0; text-align: center; font-size: 40px; font-weight: 500; opacity: 0; }
+      .amber-text { color: #e3b45d; font-weight: 600; }
+
+      .label-bottom-right { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500; position: absolute; bottom: 54px; right: 96px; }
+    </style>
+
+    <div class="status-comp">
+      <div class="label-top-left">ESTADO ACTUAL</div>
+      <img src="assets/taq-mark.svg" class="mark-top-right" />
+
+      <div class="columns-container">
+        <div id="clip-col-left" class="col clip" data-start="0.5" data-duration="8.5">
+          <div class="col-left-inner">
+            <div class="col-title">En el código hoy</div>
+            <ul class="ul-list">
+              <li>Conectores RSS / Wikimedia / Bluesky</li>
+              <li>Normalización y deduplicación</li>
+              <li>Contexto, reglas y hallazgos</li>
+              <li>API y CLI</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="clip-divider" class="clip" data-start="2.5" data-duration="6.5">
+          <div class="divider-inner"></div>
+        </div>
+
+        <div id="clip-col-right" class="col clip" data-start="2.5" data-duration="6.5">
+          <div class="col-right-inner">
+            <div class="col-title">Próximos frentes</div>
+            <ul class="ul-list">
+              <li>Validación de extremo a extremo</li>
+              <li>Seguridad, privacidad, retención</li>
+              <li>Medir calidad y carga</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="clip-footer" class="clip" data-start="5" data-duration="4">
+        <div class="footer-inner">
+          Sin fecha prometida. Primero, <span class="amber-text">evidencia.</span>
+        </div>
+      </div>
+
+      <div class="label-bottom-right">06 / ESTADO</div>
+    </div>
+
+    <script>
+      (function() {
+        const root = document.querySelector('[data-composition-id="06-status"]');
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines["06-status"] = tl;
+
+        const leftCol = root.querySelector(".col-left-inner");
+        const rightCol = root.querySelector(".col-right-inner");
+        const divider = root.querySelector(".divider-inner");
+        const footer = root.querySelector(".footer-inner");
+
+        tl.fromTo(leftCol, { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 1, ease: "power3.out" }, 0.5);
+        tl.fromTo(divider, { scaleY: 0, transformOrigin: "top" }, { scaleY: 1, autoAlpha: 1, duration: 1, ease: "power2.inOut" }, 2.0);
+        tl.fromTo(rightCol, { autoAlpha: 0, x: 30 }, { autoAlpha: 1, x: 0, duration: 1, ease: "power3.out" }, 2.5);
+        tl.fromTo(footer, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 1, ease: "power2.out" }, 5.0);
+      })();
+    </script>
+  </div>
+</template>
