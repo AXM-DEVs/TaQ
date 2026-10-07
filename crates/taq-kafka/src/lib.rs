@@ -73,7 +73,16 @@ impl KafkaSecurityConfig {
 
     /// Identifies credentials that must never be accepted by the public API guard.
     pub fn uses_development_credentials(&self) -> bool {
-        const PLACEHOLDERS: &[&str] = &["taq", "taq_dev", "default", "admin", "user", "password", "changeme", "example"];
+        const PLACEHOLDERS: &[&str] = &[
+            "taq",
+            "taq_dev",
+            "default",
+            "admin",
+            "user",
+            "password",
+            "changeme",
+            "example",
+        ];
         self.sasl_username
             .as_deref()
             .map(str::to_ascii_lowercase)
@@ -209,9 +218,24 @@ impl KafkaSecurityConfig {
         }
         if self.protocol == Protocol::SaslSsl {
             client
-                .set("sasl.mechanism", self.sasl_mechanism.as_deref().expect("validated SASL mechanism"))
-                .set("sasl.username", self.sasl_username.as_deref().expect("validated SASL username"))
-                .set("sasl.password", self.sasl_password.as_deref().expect("validated SASL password"));
+                .set(
+                    "sasl.mechanism",
+                    self.sasl_mechanism
+                        .as_deref()
+                        .expect("validated SASL mechanism"),
+                )
+                .set(
+                    "sasl.username",
+                    self.sasl_username
+                        .as_deref()
+                        .expect("validated SASL username"),
+                )
+                .set(
+                    "sasl.password",
+                    self.sasl_password
+                        .as_deref()
+                        .expect("validated SASL password"),
+                );
         }
         Ok(())
     }

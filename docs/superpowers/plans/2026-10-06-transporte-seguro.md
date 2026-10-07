@@ -99,7 +99,7 @@
 - [x] El perfil Compose local declara `TAQ_PG_TLS_MODE=disable` y `TAQ_KAFKA_SECURITY_PROTOCOL=PLAINTEXT`; no publicar puertos fuera de loopback por defecto.
 - [x] El modo público exige PostgreSQL `verify-full`, Kafka `SASL_SSL`, CA confiable y credenciales SASL; la política Kafka validada se comparte con los clientes runtime.
 - [x] Mantener error fail-closed hasta completar Tareas 1–3 y la calificación F10/F11/F12; el guard valida la configuración segura y todavía rechaza el arranque público.
-- [x] Rechazar fallback de credenciales locales/de ejemplo, brokers loopback, bind loopback/puerto 0 y afirmación upstream TLS ausente. (Escrito; ramas negativas se verifican en F12.)
+- [ ] Rechazar fallback de credenciales locales/de ejemplo, brokers locales, bind loopback/puerto 0 y afirmación upstream TLS ausente. Credenciales-placeholder y direcciones loopback literales están cubiertas en código, pero falta definir/verificar DNS contra alias privados/loopback y correr las ramas negativas en F12.
 - [ ] Al final de F12: cubrir cada rama y hacer arranque negativo sin DB para comprobar que el guard falla antes de conectarse, y arranque positivo frente a fixture seguro.
 
 ### Tarea 5: Operación y documentación
